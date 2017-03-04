@@ -19,8 +19,8 @@
 // Right-click on the line below and select 'Open "Origin.h"' to open the Origin.h
 // system header file.
 #include <Origin.h>
-#include <../OriginLab/fft.h>
 #include <fft_utils.h>
+#include <../OriginLab/fft.h>
 ////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -31,31 +31,42 @@
 ////////////////////////////////////////////////////////////////////////////////////
 // Start your functions here.
 
-string StringPostfixIncrease(string s)
+string ShortNamePostfixIncrease(string input_str)
 {	
-	int n, l;
-	string OutStr;
+	// encreases the numerical postfix of the string by 1 or adds 2-digits postfix if no postfix found
+	// cuts the string at the end if the length of string + index exceeded 17
+
+	int current_index, index_digits, str_length;
+	string out_str;
 	
-	l = 0;
+	index_digits = 0;	// initial value
 	
-	while ((NANUM != atof(s.Mid(s.GetLength()-l-1))) && (l < 15))
+	// gets index (postfix) length
+	while ((NANUM != atof(input_str.Mid(input_str.GetLength()-index_digits-1))) && (index_digits < 15))		
 	{
-		l++;
+		index_digits++;	// searchs from the end of the string and increase length value if current character is numeric
 	}
 	
-	if (l==0) 	{	l=15;	n=2;	}
-		else 	
-		{	
-			n = atoi(s.Mid(s.GetLength()-l));
-			n++;
-			l = s.GetLength()-l;
-		}
+	if (index_digits==0) 						// if no postfix found
+	{	
+		str_length = input_str.GetLength();					// gets the input string length
+		if (str_length > 15)	{	str_length = 15;	}	// if the input string length exceeds 15 cuts the string
+		current_index=2;									// if no postfix found adds 2-digits postfix
+	}					
+	else 	
+	{	
+		current_index = atoi(input_str.Mid(input_str.GetLength() - index_digits));	// gets existing postfix value
+		current_index++;											// increase index by 1
+		str_length = s.GetLength() - index_digits;					// gets string length (without index)
+	}
 	
-	OutStr = s.Mid(0,l) + n;
+	out_str = s.Mid(0,str_length) + current_index;					// concatenate string and index
+	if ((out_str.GetLength() > 17) && (str_length < 15)) 			// checks if the length of the index increased
+	{
+		out_str = input_str.Mid(0,str_length - 1) + current_index;	// corrects string length if it exceeds 17
+	}
 	
-	if ((OutStr.GetLength() > 17) && (l<15)) {	OutStr = s.Mid(0,l-1) + n;	}
-	
-	return OutStr;
+	return out_str;
 }
 
 
@@ -68,47 +79,39 @@ void ShowMessage(string msg, string title = "Information")
 }
 
 
-void Test(int n)
-{
-	n -= 1;
-	out_str("n = " + n);
-}
-
-
-int GetColumnIndex (Worksheet wks, string ColName)
-{
-	int index=-1;
+int GetColumnIndex (Worksheet wks, string col_name)
+{	// finds column of worksheet by name and return it's index
 	for (int i=0; i<wks.Columns.Count(); i++)
 	{
-		if (wks.Columns(i).GetName() == ColName) {index = i;}
+		if (wks.Columns(i).GetName() == col_name) { return i; }
 	}
-	return index;
+	return -1;
 	// return "-1" if worksheet don't contain column with this name
 }
 
 
 
   //=======================================================================================================================
- //		GET X column INDEX 
+ //		GET X-type column INDEX for input Y-type column
 //======================================
 
-int GetDataXColumnIndex(Worksheet wks, string ColName)
-{// finding column with 'X' data for column 'ColName' containing 'Y' data in order to plot graph or something...
+int GetDataXColumnIndex(Worksheet wks, string col_name)
+{// finding column with 'X'-type data for column 'col_name' containing 'Y'-type data in order to plot graph or something...
 	int index;
-	index = GetColumnIndex(wks, ColName);
+	index = GetColumnIndex(wks, col_name);
 	
 	if ((index == -1) || (wks.Columns(index).GetType() == OKDATAOBJ_DESIGNATION_X))
 	{
-		return -1;
+		return -1;	// -1 means no column with "X"-type data found or input column contains "X"-type data
 	}
 	else
 	{
-		for (int i=index; i>=0; i--)
+		for (int i = index; i >= 0; i--)
 		{
 			if (wks.Columns(i).GetType() == OKDATAOBJ_DESIGNATION_X) 
-			{return i;}
+			{ return i; }	// return column index
 		}
-		return index;
+		return -1;			// -1 means no column with "X"-type data found
 	}
 }
 
@@ -164,7 +167,7 @@ void SpectrumSamplingSingle(Dataset ds_data, Worksheet wks_data, Worksheet wks_o
 			string name = out_col_name_list[i];					// current column name
 			while (wks_out.Columns(name))						// checks if the current column name is used
 			{	
-				name = StringPostfixIncrease(name);				// change current column name postfix
+				name = ShortNamePostfixIncrease(name);				// change current column name postfix
 			}
 			
 			wks_out.Columns(i+s*out_col_count).SetName(name);	// set current column name

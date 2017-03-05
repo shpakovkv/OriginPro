@@ -119,7 +119,7 @@ int GetDataXColumnIndex(Worksheet wks, string col_name)
   //=======================================================================================================================
  //		SINGLE COLUMN PROCESS
 //======================================
-void SpectrumSamplingSingle(Dataset ds_data, Worksheet wks_data, Worksheet wks_out, int sampling_width, int samples_count, int start_index, int stop_index)
+void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_out, int sampling_width, int samples_count, int start_index, int stop_index)
 {
 	/*
 	Split data (one column) to samples with equal length; makes FFT of each sample; and writes output data to output worksheet
@@ -136,17 +136,17 @@ void SpectrumSamplingSingle(Dataset ds_data, Worksheet wks_data, Worksheet wks_o
 	// creates output layer column name list
 	int out_col_count = 6;
 	StringArray out_col_name_list(out_col_count);
-	out_col_name_list[0] = "Freq";
-	out_col_name_list[1] = "Amp";
-	out_col_name_list[2] = "X";
-	out_col_name_list[3] = "Line1y";
-	out_col_name_list[4] = "X";
-	out_col_name_list[5] = "Line2y";
+	out_col_name_list[0] = "Freq";					// frequency column "X"-type
+	out_col_name_list[1] = "Amp";					// Amplitude column "Y"-type
+	out_col_name_list[2] = "X";						// x-coordinates for LEFT vertical line (represent left bound of the sample)
+	out_col_name_list[3] = "Line1y";				// y-coordinates of the top and bottom points of the LEFT vertical line
+	out_col_name_list[4] = "X";						// x-coordinates for RIGHT vertical line (represent right bound of the sample)
+	out_col_name_list[5] = "Line2y";				// y-coordinates of the top and bottom points of the RIGHT vertical line
 	
-	for (int s = 0; s < samples_count; s++)
+	for (int sample_number = 0; sample_number < samples_count; sample_number++)
 		// for all Samples
 	{
-		if (s == samples_count - 1)
+		if (sample_number == samples_count - 1)
 		{
 
 		}
@@ -154,15 +154,15 @@ void SpectrumSamplingSingle(Dataset ds_data, Worksheet wks_data, Worksheet wks_o
 		for (int i = 0; i < out_col_count; i++)
 		// adding columns to output worksheet
 		{
-			if (wks_out.Columns.Count() < i+s*out_col_count+1)	{	wks_out.AddCol();	}
+			if (wks_out.Columns.Count() < i+sample_number * out_col_count+1)	{	wks_out.AddCol();	}
 				
-			wks_out.Columns(i+s*out_col_count).SetLowerBound(0);
-			wks_out.Columns(i+s*out_col_count).SetUpperBound(1);
+			wks_out.Columns(i + sample_number*out_col_count).SetLowerBound(0);
+			wks_out.Columns(i + sample_number*out_col_count).SetUpperBound(1);
 			if (i % 2 == 0)	
 			{	
-				wks_out.Columns(i+s*out_col_count).SetType(OKDATAOBJ_DESIGNATION_X);		// set column type to "X"
+				wks_out.Columns(i + sample_number * out_col_count).SetType(OKDATAOBJ_DESIGNATION_X);		// set column type to "X"
 			}
-			else 	{wks_out.Columns(i+s*out_col_count).SetType(OKDATAOBJ_DESIGNATION_Y);}	// set column type to "Y"
+			else 	{wks_out.Columns(i + sample_number * out_col_count).SetType(OKDATAOBJ_DESIGNATION_Y);}	// set column type to "Y"
 				
 			string name = out_col_name_list[i];					// current column name
 			while (wks_out.Columns(name))						// checks if the current column name is used
@@ -170,7 +170,7 @@ void SpectrumSamplingSingle(Dataset ds_data, Worksheet wks_data, Worksheet wks_o
 				name = ShortNamePostfixIncrease(name);				// change current column name postfix
 			}
 			
-			wks_out.Columns(i+s*out_col_count).SetName(name);	// set current column name
+			wks_out.Columns(i + sample_number*out_col_count).SetName(name);	// set current column name
 		}
 		
 		Dataset x_data_ds;
@@ -182,48 +182,48 @@ void SpectrumSamplingSingle(Dataset ds_data, Worksheet wks_data, Worksheet wks_o
 
 		for (i=0; i<sampling_width; i++)
 		{
-			v_data_x[i] = x_data_ds[start_index + i + s*sampling_width];
-			v_data_y[i] = ds_data[start_index + i + s*sampling_width];
+			v_data_x[i] = x_data_ds[start_index + i + sample_number * sampling_width];
+			v_data_y[i] = ds_data[start_index + i + sample_number * sampling_width];
 		}
 		vector<double> vFreq, vAmp;
 		fft_amp(v_data_x, v_data_y, vFreq, vAmp, sampling_width, true, true);
 		
 		Dataset TempDS;
 		// FREQUENCY
-		TempDS.Attach(wks_out.Columns(s*out_col_count));
+		TempDS.Attach(wks_out.Columns(sample_number * out_col_count));
 		TempDS.SetUpperBound(vFreq.GetSize());
 		TempDS = vFreq;
 		TempDS.Detach();
 		
 		// AMPLITUDE
-		TempDS.Attach(wks_out.Columns(s*out_col_count+1));
+		TempDS.Attach(wks_out.Columns(sample_number * out_col_count + 1));
 		TempDS.SetUpperBound(vAmp.GetSize());
 		TempDS = vAmp;
 		TempDS.Detach();
 		
 		// Line_1_X
-		TempDS.Attach(wks_out.Columns(s*out_col_count+2));
-		TempDS[0] = x_data_ds[start_index + s*sampling_width];
+		TempDS.Attach(wks_out.Columns(sample_number * out_col_count + 2));
+		TempDS[0] = x_data_ds[start_index + sample_number * sampling_width];
 		TempDS[1] = TempDS[0];
 		TempDS.Detach();
 		
-		double MaxY, MinY, Data_Amp;
+		double MaxY, MinY, data_amp_range;
 		ds_data.GetMinMax(MinY, MaxY);
-		Data_Amp = MaxY - MinY;
+		data_amp_range = MaxY - MinY;
 		//Line_1_Y
-		TempDS.Attach(wks_out.Columns(s*out_col_count+3));
-		TempDS[0] = MinY - Data_Amp*0,05;
-		TempDS[1] = MaxY + Data_Amp*0,05;
+		TempDS.Attach(wks_out.Columns(sample_number * out_col_count + 3));
+		TempDS[0] = MinY - data_amp_range * 0,05;		// sets vertical lines lower points to 5% lower than minimum 
+		TempDS[1] = MaxY + data_amp_range * 0,05;		// sets vertical lines upper points to 5% higher than maximum
 		TempDS.Detach();
 		// Line_2_X
-		TempDS.Attach(wks_out.Columns(s*out_col_count+4));
-		TempDS[0] = x_data_ds[start_index + (s+1)*sampling_width - 1];
+		TempDS.Attach(wks_out.Columns(sample_number * out_col_count + 4));
+		TempDS[0] = x_data_ds[start_index + (sample_number + 1) * sampling_width - 1];
 		TempDS[1] = TempDS[0];
 		TempDS.Detach();
 		//Line_2_Y
-		TempDS.Attach(wks_out.Columns(s*out_col_count+5));
-		TempDS[0] = MinY - Data_Amp*0,05;
-		TempDS[1] = MaxY + Data_Amp*0,05;
+		TempDS.Attach(wks_out.Columns(sample_number * out_col_count + 5));
+		TempDS[0] = MinY - data_amp_range * 0,05;		// sets vertical lines lower points to 5% lower than minimum 
+		TempDS[1] = MaxY + data_amp_range * 0,05;		// sets vertical lines upper points to 5% higher than maximum
 		TempDS.Detach();
 	}
 }
@@ -342,7 +342,7 @@ void SpectrumProcessRun(string data_wp_name, string col_name, string out_wp_name
 			{
 				if(out_wp.Layers.Count() < shoot_num + 1) {out_wp.AddLayer("origin");}			// adds new layer to the output WorksheetPage
 				Worksheet data_wks = data_wp.Layers(shoot_num * osc_count + osc_number - 1);	// attach current source layer
-				out_wp.Layers(shoot_num).SetName(data_wks.GetName());									// set current output layer name equal to source layer name
+				out_wp.Layers(shoot_num).SetName(data_wks.GetName());							// set current output layer name equal to source layer name
 				out_str("Layer	" + data_wks.GetName());										// prints current layer name to log
 				Worksheet out_wks = out_wp.Layers(shoot_num);									// attach current output layer
 				
@@ -382,7 +382,7 @@ void SpectrumProcessRun(string data_wp_name, string col_name, string out_wp_name
 						}
 
 						// SPECTRUM
-						SpectrumSamplingSingle(ds_data, data_wks, out_wks, sampling_width, samples_count, start_index, stop_index);
+						SingleSpectrumProcess(ds_data, data_wks, out_wks, sampling_width, samples_count, start_index, stop_index);
 						out_str("Spectrum process done.");
 						
 						// GRAPH // *reserved*

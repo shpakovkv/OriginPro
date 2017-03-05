@@ -57,10 +57,10 @@ string ShortNamePostfixIncrease(string input_str)
 	{	
 		current_index = atoi(input_str.Mid(input_str.GetLength() - index_digits));	// gets existing postfix value
 		current_index++;											// increase index by 1
-		str_length = s.GetLength() - index_digits;					// gets string length (without index)
+		str_length = input_str.GetLength() - index_digits;					// gets string length (without index)
 	}
 	
-	out_str = s.Mid(0,str_length) + current_index;					// concatenate string and index
+	out_str = input_str.Mid(0,str_length) + current_index;					// concatenate string and index
 	if ((out_str.GetLength() > 17) && (str_length < 15)) 			// checks if the length of the index increased
 	{
 		out_str = input_str.Mid(0,str_length - 1) + current_index;	// corrects string length if it exceeds 17

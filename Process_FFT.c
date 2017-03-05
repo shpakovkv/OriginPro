@@ -353,9 +353,9 @@ void SpectrumProcessRun(string data_wp_name, string col_name, string out_wp_name
 					if (start_index < ds_data.GetSize()-10)
 					{
 						int local_stop_index = stop_index;								// stop_index of current dataset
-						if (local_stop_index < ds_data.GetSize())
+						if (local_stop_index > ds_data.GetSize())
 						{
-							local_stop_index = ds_data.GetSize();						// correct current stop index if needed
+							local_stop_index = ds_data.GetSize() - 1;					// correct current stop index if needed
 						}
 
 						data_length = local_stop_index - start_index + 1;				// gets length of the data array

@@ -79,6 +79,25 @@ void ShowMessage(string msg, string title = "Information")
 }
 
 
+int GetNearestIndex(Dataset ds, double value)
+{	
+	int start_i = ds.GetLowerBound();
+	int stop_i = ds.GetUpperBound();
+	if ((value < ds[start_i]) || (value > ds[stop_i]) || (stop_i - start_i < 3))
+	{
+		return NANUM;
+	}
+
+	for (int i = start_i + 1; i <= stop_i; i++)
+	{
+		if ((value > ds[i-1]) && (value <= ds[i]))
+		{
+			return i;
+		}
+	}
+	return NANUM;
+}
+
 int GetColumnIndex (Worksheet wks, string col_name)
 {	// finds column of worksheet by name and return it's index
 	for (int i=0; i<wks.Columns.Count(); i++)
@@ -207,6 +226,7 @@ void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_ou
 		TempDS[1] = TempDS[0];
 		TempDS.Detach();
 		
+		// gets max and min values of Y
 		double MaxY, MinY, data_amp_range;
 		ds_data.GetMinMax(MinY, MaxY);
 		data_amp_range = MaxY - MinY;
@@ -404,6 +424,168 @@ void SpectrumProcessRun(string data_wp_name, string col_name, string out_wp_name
 	else	{ShowMessage("Error!\nCan't find WorksheetPage '" + data_wp_name + "'.\nProcess stopped.");}
 }
 
+
+
+//=======================================================================================================================
+ //		MAIN SINGLE
+//======================================
+void SpectrumProcessSingleRun(string data_wp_name, string data_wks_name, string col_name, string out_wp_name, double start_x, double stop_x)
+{
+	/* 
+	3-8 input parameters:
+	data_wp_name	- [string] short_name  of the data WorksheetPage
+	col_name 		- [string] short_name of the column with data
+	out_wp_name 	- [string] new output Worksheet_Page name 
+
+	sampling_width  [Default = -1] - [int] data from start_index to stop_index will be split into samples of equal length
+	osc_count		[Default =  1] - [int] the number of sheets which belong to the same "shoot" and contain data from different oscilloscopes		
+	osc_number 		[Default =  1] - [int] the number of the sheet within one "shoot" where the target column is 
+					  			   (index of target column = (Shoot_Number - 1) * osc_count + osc_number) where Shoot_Number is 1-based index 
+
+	start_index 	[Default =  0] - [int] data with an zero-based index less than this will be cut 	
+	stop_index		[Default = -1] - [int] data with an zero-based index greater than this will be cut 									
+	*/
+
+	WorksheetPage data_wp;							// source WorksheetPage
+	WorksheetPage out_wp;							// output WorksheetPage
+	Worksheet data_wks;								// data WorksheetPage 
+	Worksheet out_wks;
+	string out_wks_name;
+	Dataset ds_data;								// data column dataset
+	Dataset data_y_ds;
+	Dataset data_x_ds;
+	int samples_count, data_length, start_i, stop_i;					// other variables
+	int sampling_width;
+
+	// creates output layer column name list
+	int out_col_count = 6;
+	StringArray out_col_name_list(out_col_count);
+	out_col_name_list[0] = "Freq";
+	out_col_name_list[1] = "Amp";
+	out_col_name_list[2] = "X";
+	out_col_name_list[3] = "Line1x";
+	out_col_name_list[4] = "X";
+	out_col_name_list[5] = "Line2x";
+	
+	// Start INDEX must be 1-based. But we need zero-based index:
+	// if(start_index != 0) {start_index -= 1;}  // ARCHIVED
+	
+	data_wp = Project.WorksheetPages(data_wp_name);
+	if (data_wp)
+	{
+		out_str("Connecting WorksheetPage '" + data_wp_name + "'.....OK");
+
+		// wks existence check
+		data_wks = data_wp.Layers(data_wks_name);
+		if (!data_wks) 
+		{
+
+			ShowMessage("Error!\nWorksheetPage '" + data_wp_name + "' has not layer '" + data_wks_name + "'");
+			throw 100;
+		}
+
+		/*
+		// sampling_width check
+		if ((sampling_width < 10) && (sampling_width > 0))	// if sampling_width < 1 means 
+		{
+			ShowMessage("Error!\nsampling_width [" + sampling_width + "] should be at least 10.");
+			throw 100;
+		}
+		*/
+
+		// column check
+		
+		if (data_wks.Columns(col_name))
+		{
+			data_y_ds.Attach(data_wks.Columns(col_name));
+		}
+		else
+		{
+			ShowMessage("Error!\nWorksheetPage '" + data_wp_name + "' has not layer '" + data_wks_name + "'");
+			throw 100;
+		}
+
+		int data_x_col_index = GetDataXColumnIndex(data_wks, col_name);
+		if (data_x_col_index >= 0)
+		{
+			data_x_ds.Attach(data_wks.Columns(data_x_col_index));
+		}
+		else
+		{
+			ShowMessage("Error! Can't find column with 'X'-data for 'Y'-data in '" + col_name + "' column.");
+			throw 100;
+		}
+
+		// start_x check
+		double min, max;
+		data_x_ds.GetMinMax(min, max);
+		if ((!start_x) || (start_x < min) || (start_x >= stop_x))
+		{
+			start_x = min;
+		}
+
+		// stop_x check
+		if ((!stop_x) || (stop_x > max) || (start_x >= stop_x))
+		{
+			stop_x = max;
+		}
+
+		// gets start and stop indexes for X data column from start and stop values
+		start_i = GetNearestIndex(data_x_ds, start_x);
+		stop_i = GetNearestIndex(data_x_ds, stop_x);
+		//data_x_ds.Detach();
+
+		if ((!start_i) || (!stop_i))
+		{
+			ShowMessage("Error! Wrong start/stop condition.");
+			throw 100;
+		}
+
+		if (stop_i - start_x < 10)
+		{
+			ShowMessage("Not enough data for FFT.");
+			throw 100;
+		}
+
+		// check if out_wp_name exists
+		if (Project.WorksheetPages(out_wp_name))
+		{
+			out_wp = Project.WorksheetPages(out_wp_name);				// attach output worksheetpage
+			out_wp.AddLayer("origin");									// add new layer to output worksheetpage
+			out_wks = out_wp.Layers(out_wp.Layers.Count() - 1);			// attach output worksheet
+			out_wks_name = data_wks_name;								// gets data worksheet name
+			while (out_wp.Layers(out_wks_name))							// checks if current name is used
+			{	
+				out_wks_name = ShortNamePostfixIncrease(out_wks_name);	// change current name postfix
+			}
+			
+			out_wks.SetName(out_wks_name);								// change output worksheet name 
+		}
+		else 
+		{
+			ShowMessage("Error!\nCan't find WorksheetPage '" + out_wp_name + "'.\nProcess stopped.");
+			throw 100;
+		}
+
+							
+		sampling_width = stop_i - start_i + 1;		// gets length of the data array
+		samples_count = 1;							// gets samples count
+
+		// SPECTRUM
+		SingleSpectrumProcess(data_y_ds, data_wks, out_wks, sampling_width, samples_count, start_i, stop_i);
+		out_str("Spectrum process done.");
+		out_str("sampling_width = " + sampling_width);
+		out_str("start_i = " + start_i);
+		out_str("stop_i = " + stop_i);
+		
+		// GRAPH // *reserved*
+
+		ds_data.Detach();
+		
+	}
+	// Data WorksheetPage check
+	else	{ShowMessage("Error!\nCan't find WorksheetPage '" + data_wp_name + "'.\nProcess stopped.");}
+}
 
 
 

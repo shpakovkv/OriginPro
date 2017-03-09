@@ -50,7 +50,9 @@ string ShortNamePostfixIncrease(string input_str)
 	if (index_digits==0) 						// if no postfix found
 	{	
 		str_length = input_str.GetLength();					// gets the input string length
-		if (str_length > 15)	{	str_length = 15;	}	// if the input string length exceeds 15 cuts the string
+		if (str_length > 15)	
+		{ str_length = 15; }	// if the input string length exceeds 15 cuts the string
+
 		current_index=2;									// if no postfix found adds 2-digits postfix
 	}					
 	else 	
@@ -91,9 +93,7 @@ int GetNearestIndex(Dataset ds, double value)
 	for (int i = start_i + 1; i <= stop_i; i++)
 	{
 		if ((value > ds[i-1]) && (value <= ds[i]))
-		{
-			return i;
-		}
+		{ return i; }
 	}
 	return NANUM;
 }
@@ -102,7 +102,8 @@ int GetColumnIndex (Worksheet wks, string col_name)
 {	// finds column of worksheet by name and return it's index
 	for (int i=0; i<wks.Columns.Count(); i++)
 	{
-		if (wks.Columns(i).GetName() == col_name) { return i; }
+		if (wks.Columns(i).GetName() == col_name) 
+		{ return i; }
 	}
 	return -1;
 	// return "-1" if worksheet don't contain column with this name
@@ -141,16 +142,19 @@ int GetDataXColumnIndex(Worksheet wks, string col_name)
 void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_out, int sampling_width, int samples_count, int start_index, int stop_index)
 {
 	/*
-	Split data (one column) to samples with equal length; makes FFT of each sample; and writes output data to output worksheet
+	Split data (one column) to specified amount (samples_count) of samples with equal length (sampling_width); 
+	makes FFT of each sample and writes output data to output worksheet
 
 	Parameters:
-	col_data		- [column object] column with input data
-	wks_data		- [worksheet object] worksheet with input data (needed for "X" column search)
-	wks_out 		- [worksheet object] output worksheet
-	sampling_width 	- [int] length of sample (the number of array elements) 			(Default = the whole input data length)
-	start_index 	- [int] data with index less than start_index will be ignored		(Default = 0)
-	stop_index 		- [int] data with index greater than start_index will be ignored	(Default = end of input data)
+	ds_data 		- [Dataset] column with Y-type data
+	wks_data 		- [Worksheet] worksheet with data
+	wks_out 		- [Worksheet] worksheet to write output data in
+	sampling_width 	- [int] length of sample (the number of array elements)  			
+	start_index 	- [int] data with index less than start_index will be ignored		
+	stop_index 		- [int] data with index greater than start_index will be ignored	
 	*/
+
+	Dataset x_data_ds;
 
 	// creates output layer column name list
 	int out_col_count = 6;
@@ -192,7 +196,6 @@ void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_ou
 			wks_out.Columns(i + sample_number*out_col_count).SetName(name);	// set current column name
 		}
 		
-		Dataset x_data_ds;
 		int x_data_index = GetDataXColumnIndex(wks_data, ds_data.GetName());
 		vector<double> v_data_x, v_data_y;
 		x_data_ds.Attach(wks_data.Columns(x_data_index));
@@ -204,8 +207,9 @@ void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_ou
 			v_data_x[i] = x_data_ds[start_index + i + sample_number * sampling_width];
 			v_data_y[i] = ds_data[start_index + i + sample_number * sampling_width];
 		}
+
 		vector<double> vFreq, vAmp;
-		fft_amp(v_data_x, v_data_y, vFreq, vAmp, sampling_width, true, true);
+		fft_amp(v_data_x, v_data_y, vFreq, vAmp, sampling_width, true, true);		// FFT calculation
 		
 		Dataset TempDS;
 		// FREQUENCY
@@ -245,6 +249,8 @@ void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_ou
 		TempDS[0] = MinY - data_amp_range * 0,05;		// sets vertical lines lower points to 5% lower than minimum 
 		TempDS[1] = MaxY + data_amp_range * 0,05;		// sets vertical lines upper points to 5% higher than maximum
 		TempDS.Detach();
+
+		x_data_ds.Detach();
 	}
 }
 
@@ -427,34 +433,116 @@ void SpectrumProcessRun(string data_wp_name, string col_name, string out_wp_name
 
 
 //=======================================================================================================================
+ //		MAIN "ALL LAYERS"
+//======================================
+void SpectrumProcessAllLayers(string data_wp_name, string col_name, string out_wp_name, vector<double> start_x, vector<double> stop_x)
+{
+	/* 
+	5 input parameters:
+	data_wp_name	- [string] short_name of the data WorksheetPage
+	col_name 		- [string] short_name of the column with data
+	out_wp_name 	- [string] new output Worksheet_Page name 
+	start_x  		- [vector of doubles] leftmost X of the interval for each layer (if single value found it will be used for all layers)
+	stop_x			- [vector of doubles] rightmost X of the interval for each layer (if single value found it will be used for all layers)						
+	*/
+
+
+	int layers_count;
+	WorksheetPage data_wp;
+	data_wp = Project.WorksheetPages(data_wp_name);
+	if (data_wp)	// WorksheetPage existence check
+	{
+		layers_count = data_wp.Layers.Count(); 
+
+		if (start_x.GetSize() == 1)					// if single value found it will be used for all layers
+		{ 
+			for (int i = 1; i < layers_count; i++)
+			{
+				start_x.Add(start_x[0]);
+			}
+		}
+
+		if (stop_x.GetSize() == 1)					// if single value found it will be used for all layers
+		{ 
+			for (int i = 1; i < layers_count; i++)
+			{
+				stop_x.Add(stop_x[0]);
+			}
+		}
+
+		if (start_x.GetSize() != layers_count)		// compare the number of start_x elements and the number of data_wp layers
+		{
+			ShowMessage("Error!\nWorksheetPage '" + data_wp.GetName() + "' layers count(" + layers_count + ") is not a multiple of the vector start_x size (" + start_x.GetSize() + ").");
+			throw 100;
+		}
+
+		if (stop_x.GetSize() != layers_count)		// compare the number of stop_x elements and the number of data_wp layers
+		{
+			ShowMessage("Error!\nWorksheetPage '" + data_wp.GetName() + "' layers count(" + layers_count + ") is not a multiple of the vector stop_x size (" + stop_x.GetSize() + ").");
+			throw 100;
+		}
+
+		for (int i = 0; i < layers_count; i++)		// checks if all start_x and stop_x elements are numeric
+		{
+			if (start_x[i] == NANUM)
+			{
+				ShowMessage("Error!\nWrong input value in start_x at #" + (i + 1));
+				throw 100;
+			}
+			if (stop_x[i] == NANUM)
+			{
+				ShowMessage("Error!\nWrong input value in stop_x at #" + (i + 1));
+				throw 100;
+			}
+
+		}
+
+		if (!Project.WorksheetPages(out_wp_name))		// creates new output WorksheetPage if not found
+		{
+			WorksheetPage out_wp;
+			out_wp.Create("origin");
+			out_wp.SetName(out_wp_name);
+			out_wp.Layers(0).Delete();
+			out_wp.Detach();
+		}
+
+		string layer_name;
+		for (i = 0; i < layers_count; i++)		// for all data_wp layer
+		{
+			layer_name = data_wp.Layers(i).GetName();		// gets current layer name
+			SpectrumProcessSingleRun(data_wp_name, layer_name, col_name, out_wp_name, start_x[i], stop_x[i]);
+		}
+
+		data_wp.Detach();
+	}
+	
+}
+
+//=======================================================================================================================
  //		MAIN SINGLE
 //======================================
 void SpectrumProcessSingleRun(string data_wp_name, string data_wks_name, string col_name, string out_wp_name, double start_x, double stop_x)
 {
 	/* 
-	3-8 input parameters:
-	data_wp_name	- [string] short_name  of the data WorksheetPage
+	6 input parameters:
+	data_wp_name	- [string] short_name of the data WorksheetPage
+	data_wks_name	- [string] short name of the data Worksheet
 	col_name 		- [string] short_name of the column with data
 	out_wp_name 	- [string] new output Worksheet_Page name 
-
-	sampling_width  [Default = -1] - [int] data from start_index to stop_index will be split into samples of equal length
-	osc_count		[Default =  1] - [int] the number of sheets which belong to the same "shoot" and contain data from different oscilloscopes		
-	osc_number 		[Default =  1] - [int] the number of the sheet within one "shoot" where the target column is 
-					  			   (index of target column = (Shoot_Number - 1) * osc_count + osc_number) where Shoot_Number is 1-based index 
-
-	start_index 	[Default =  0] - [int] data with an zero-based index less than this will be cut 	
-	stop_index		[Default = -1] - [int] data with an zero-based index greater than this will be cut 									
+	start_x  		- [double] leftmost X of the interval 
+	stop_x			- [double] rightmost X of the interval 								
 	*/
 
-	WorksheetPage data_wp;							// source WorksheetPage
-	WorksheetPage out_wp;							// output WorksheetPage
-	Worksheet data_wks;								// data WorksheetPage 
-	Worksheet out_wks;
-	string out_wks_name;
-	Dataset ds_data;								// data column dataset
-	Dataset data_y_ds;
-	Dataset data_x_ds;
-	int samples_count, data_length, start_i, stop_i;					// other variables
+	WorksheetPage data_wp;		// source WorksheetPage
+	WorksheetPage out_wp;		// output WorksheetPage
+	Worksheet data_wks;			// data WorksheetPage 
+	Worksheet out_wks;			// output Worksheet
+	string out_wks_name;		// output Worksheet short name	
+	Dataset data_y_ds;			// dataset attached to the Y-data column
+	Dataset data_x_ds;			// dataset attached to the X-data column
+
+	int start_i, stop_i;		// leftmost and rightmost indexes of the processing interval
+	int samples_count = 1;		// single sample
 	int sampling_width;
 
 	// creates output layer column name list
@@ -569,18 +657,15 @@ void SpectrumProcessSingleRun(string data_wp_name, string data_wks_name, string 
 
 							
 		sampling_width = stop_i - start_i + 1;		// gets length of the data array
-		samples_count = 1;							// gets samples count
 
 		// SPECTRUM
 		SingleSpectrumProcess(data_y_ds, data_wks, out_wks, sampling_width, samples_count, start_i, stop_i);
 		out_str("Spectrum process done.");
-		out_str("sampling_width = " + sampling_width);
-		out_str("start_i = " + start_i);
-		out_str("stop_i = " + stop_i);
 		
 		// GRAPH // *reserved*
 
-		ds_data.Detach();
+		data_x_ds.Detach();
+		data_y_ds.Detach();
 		
 	}
 	// Data WorksheetPage check
@@ -790,4 +875,24 @@ void SpectrumAutoTextToGraphLayer(GraphPage gp, int GraphLayerIndex, string text
 	//out_str("TextWidth = " + TextObj.Width);
 	//out_str("TextLeft = " + TextObj.Left);
 	//out_str("Height = " + TextObj.Height);
+}
+
+void test(vector<double> dbl_arr)
+{	
+	for (int i = 0; i < dbl_arr.GetSize(); i++)
+	{
+		if (dbl_arr[i] == NANUM) 
+		{ 
+			out_str("Wrong input at i = " + (i + 1) + ""); 
+			throw 100;
+		}
+		/*
+		else
+		{
+			string msg = dbl_arr[i];
+			out_str(msg);
+		}
+		*/
+	}
+	
 }

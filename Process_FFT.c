@@ -139,14 +139,15 @@ int GetDataXColumnIndex(Worksheet wks, string col_name)
   //=======================================================================================================================
  //		SINGLE COLUMN PROCESS
 //======================================
-void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_out, int sampling_width, int samples_count, int start_index, int stop_index)
+void SingleSpectrumProcess(Column col_y, Column col_x, Worksheet wks_data, Worksheet wks_out, int sampling_width, int samples_count, int start_index, int stop_index)
 {
 	/*
 	Split data (one column) to specified amount (samples_count) of samples with equal length (sampling_width); 
 	makes FFT of each sample and writes output data to output worksheet
 
 	Parameters:
-	ds_data 		- [Dataset] column with Y-type data
+	col_y 			- [Column-obj] column with Y-type data
+	col_x 			- [Column-obj] column with X-type data
 	wks_data 		- [Worksheet] worksheet with data
 	wks_out 		- [Worksheet] worksheet to write output data in
 	sampling_width 	- [int] length of sample (the number of array elements)  			
@@ -166,6 +167,22 @@ void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_ou
 	out_col_name_list[4] = "X";						// x-coordinates for RIGHT vertical line (represent right bound of the sample)
 	out_col_name_list[5] = "Line2y";				// y-coordinates of the top and bottom points of the RIGHT vertical line
 	
+	Dataset ds_y, ds_x;
+
+	ds_y.Attach(col_y);		// attachs to column with Y-type data
+	if (!ds_y)
+	{
+		ShowMessage("Error!\nCan't connect to column '" + col_y.GetName() + "' with Y-data.");
+		throw 100;
+	}
+
+	ds_x.Attach(col_x);		// attachs to column with X-type data
+	if (!ds_x)
+	{
+		ShowMessage("Error!\nCan't connect to column '" + col_x.GetName() + "' with X-data.");
+		throw 100;
+	}
+
 	for (int sample_number = 0; sample_number < samples_count; sample_number++)
 		// for all Samples
 	{
@@ -196,16 +213,16 @@ void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_ou
 			wks_out.Columns(i + sample_number*out_col_count).SetName(name);	// set current column name
 		}
 		
-		int x_data_index = GetDataXColumnIndex(wks_data, ds_data.GetName());
+		//int x_data_index = GetDataXColumnIndex(wks_data, ds_y.GetName());
+		
 		vector<double> v_data_x, v_data_y;
-		x_data_ds.Attach(wks_data.Columns(x_data_index));
 		v_data_x.SetSize(sampling_width);
 		v_data_y.SetSize(sampling_width);
 
 		for (i=0; i<sampling_width; i++)
 		{
-			v_data_x[i] = x_data_ds[start_index + i + sample_number * sampling_width];
-			v_data_y[i] = ds_data[start_index + i + sample_number * sampling_width];
+			v_data_x[i] = ds_x[start_index + i + sample_number * sampling_width];
+			v_data_y[i] = ds_y[start_index + i + sample_number * sampling_width];
 		}
 
 		vector<double> vFreq, vAmp;
@@ -226,13 +243,13 @@ void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_ou
 		
 		// Line_1_X
 		TempDS.Attach(wks_out.Columns(sample_number * out_col_count + 2));
-		TempDS[0] = x_data_ds[start_index + sample_number * sampling_width];
+		TempDS[0] = ds_x[start_index + sample_number * sampling_width];
 		TempDS[1] = TempDS[0];
 		TempDS.Detach();
 		
 		// gets max and min values of Y
 		double MaxY, MinY, data_amp_range;
-		ds_data.GetMinMax(MinY, MaxY);
+		ds_y.GetMinMax(MinY, MaxY);
 		data_amp_range = MaxY - MinY;
 		//Line_1_Y
 		TempDS.Attach(wks_out.Columns(sample_number * out_col_count + 3));
@@ -241,7 +258,7 @@ void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_ou
 		TempDS.Detach();
 		// Line_2_X
 		TempDS.Attach(wks_out.Columns(sample_number * out_col_count + 4));
-		TempDS[0] = x_data_ds[start_index + (sample_number + 1) * sampling_width - 1];
+		TempDS[0] = ds_x[start_index + (sample_number + 1) * sampling_width - 1];
 		TempDS[1] = TempDS[0];
 		TempDS.Detach();
 		//Line_2_Y
@@ -250,7 +267,8 @@ void SingleSpectrumProcess(Dataset ds_data, Worksheet wks_data, Worksheet wks_ou
 		TempDS[1] = MaxY + data_amp_range * 0,05;		// sets vertical lines upper points to 5% higher than maximum
 		TempDS.Detach();
 
-		x_data_ds.Detach();
+		ds_x.Detach();
+		ds_y.Detach();
 	}
 }
 
@@ -408,7 +426,7 @@ void SpectrumProcessRun(string data_wp_name, string col_name, string out_wp_name
 						}
 
 						// SPECTRUM
-						SingleSpectrumProcess(ds_data, data_wks, out_wks, sampling_width, samples_count, start_index, stop_index);
+						// SingleSpectrumProcess(ds_data, data_wks, out_wks, sampling_width, samples_count, start_index, stop_index);
 						out_str("Spectrum process done.");
 						
 						// GRAPH // *reserved*
@@ -452,6 +470,7 @@ void SpectrumProcessAllLayers(string data_wp_name, string col_name, string out_w
 	data_wp = Project.WorksheetPages(data_wp_name);
 	if (data_wp)	// WorksheetPage existence check
 	{
+		out_str("Connected to data worksheetpage '" + data_wp_name + "'.");
 		layers_count = data_wp.Layers.Count(); 
 
 		if (start_x.GetSize() == 1)					// if single value found it will be used for all layers
@@ -514,6 +533,7 @@ void SpectrumProcessAllLayers(string data_wp_name, string col_name, string out_w
 		}
 
 		data_wp.Detach();
+		out_str("Spectrum process DONE.\nDisconnected from data worksheetpage '" + data_wp_name + "'");
 	}
 	
 }
@@ -561,8 +581,6 @@ void SpectrumProcessSingleRun(string data_wp_name, string data_wks_name, string 
 	data_wp = Project.WorksheetPages(data_wp_name);
 	if (data_wp)
 	{
-		out_str("Connecting WorksheetPage '" + data_wp_name + "'.....OK");
-
 		// wks existence check
 		data_wks = data_wp.Layers(data_wks_name);
 		if (!data_wks) 
@@ -589,7 +607,7 @@ void SpectrumProcessSingleRun(string data_wp_name, string data_wks_name, string 
 		}
 		else
 		{
-			ShowMessage("Error!\nWorksheetPage '" + data_wp_name + "' has not layer '" + data_wks_name + "'");
+			ShowMessage("Error!\nThe Worksheet '" + data_wks_name + "' of the WorksheetPage '" + data_wp_name + "' has not column '" + col_name + "'\nProcess stopped!");
 			throw 100;
 		}
 
@@ -659,8 +677,7 @@ void SpectrumProcessSingleRun(string data_wp_name, string data_wks_name, string 
 		sampling_width = stop_i - start_i + 1;		// gets length of the data array
 
 		// SPECTRUM
-		SingleSpectrumProcess(data_y_ds, data_wks, out_wks, sampling_width, samples_count, start_i, stop_i);
-		out_str("Spectrum process done.");
+		SingleSpectrumProcess(data_wks.Columns(col_name), data_wks.Columns(data_x_col_index), data_wks, out_wks, sampling_width, samples_count, start_i, stop_i);
 		
 		// GRAPH // *reserved*
 

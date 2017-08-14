@@ -1,0 +1,23 @@
+StringArray aa;
+aa.Add("PeaksSeries01");
+aa.Add("PeaksSeries02");
+aa.Add("PeaksSeries03");
+aa.Add("PeaksSeries04");
+
+for (bb = 1; bb<=aa.GetSize(); bb++)
+{
+	window -a %(aa.GetAt(bb)$);
+	count = page.nLayers;
+	for (ii = 1; ii<=count; ii++)
+	{
+		page.active = ii;
+		//col(1) = {0, 10, 20, 25, 30, 40, 50, 60, 70, 80, 90};
+		wks.col2.name$ = "PeakX";
+		wks.col3.name$ = "PeakY";
+		wks.col4.name$ = "sqrL";
+		wks.col5.name$ = "sqrR";
+		wks.col6.name$ = "sqrSum";
+		//col(1) = data(0, 10, 1);
+		//layer.name$ = Format(ii+60, "#4")$;
+	}
+}

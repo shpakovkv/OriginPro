@@ -1770,7 +1770,7 @@ void SignalAnalysisProcess()
 								name = StringPostfixIncrease(name);
 							}
 							SignalFrontAndDuration(NewDataBookName, name, SignalsCount);
-							CommaToDotReplacement(name, 0);
+							// CommaToDotReplacement(name, 0);
 						}
 	    			}// Main Process
 	    

@@ -293,13 +293,13 @@ void FillAllInOneGraphLayer(GraphLayer Graph, string DataBookName, string ColNam
 {//filling single GraphLayer with Labels, Curves & Legend.
 //GraphNumber >= 1
 	
-	// SKIP - zero-based indexes of DATA-Book layer with data to be skiped in AllInOne graph process
+	// SKIP - one-based indexes of DATA-Book layer with data to be skiped in AllInOne graph process
 	vector<uint> temp_vec;
 	
 	//for all ColumnNames
 	for (int i=StartLayer; i<CurvesCount+StartLayer; i++)
 	{//plotting curves
-		if (skip.Find(temp_vec, i) == 0)
+		if (skip.Find(temp_vec, i + 1) == 0)	// skip contains one-based indexes, 'i' - zero-based index
 		{
 			Worksheet TempWks(Project.WorksheetPages(DataBookName).Layers(i));
 			
@@ -329,7 +329,9 @@ void FillAllInOneGraphLayer(GraphLayer Graph, string DataBookName, string ColNam
 void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer, string postfix, vector<int> skip)
 {
 	StringArray GraphName(17), ColName(17), BookName(17), BookName02(3), ColName02(3);
-	/* 2017 05 SERIES
+	
+	/*
+	// 2017 05 SERIES
 	GraphName[0] = "";	ColName[0] = "";	BookName[0] = "";
 	GraphName[1] = "AllInOne00" + postfix;	ColName[1] = "PMTD1";	BookName[1] = "OutDPO7054";
 	GraphName[2] = "AllInOne10" + postfix;	ColName[2] = "PMTD2";	BookName[2] = "OutDPO7054";
@@ -350,6 +352,7 @@ void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer
 	BookName02[2] = "";	ColName02[2] = "";
 	*/
 	
+	/*
 	// 2016 SERIES
 	GraphName[0] = "";	ColName[0] = "";	BookName[0] = "";
 	GraphName[1] = "AllInOneD1" + postfix;	ColName[1] = "PMTD1";	BookName[1] = "OutDPO7054";
@@ -373,8 +376,26 @@ void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer
 	BookName02[0] = "OutTDS2024C";	ColName02[0] = "Voltage";
 	BookName02[1] = "OutTDS2024C";	ColName02[1] = "PreI";
 	BookName02[2] = "";	ColName02[2] = "";	// this variable's values will be loop throgh above BookName & ColName arrays
+	*/
 	
-	int GraphNumber = 16;
+	
+	// 2014 11 SERIES
+	GraphName[0] = "";	ColName[0] = "";	BookName[0] = "";
+	GraphName[1] = "AllInOnePMT1" + postfix;	ColName[1] = "FEU1";	BookName[1] = "PMT1";
+	GraphName[2] = "AllInOnePMT2" + postfix;	ColName[2] = "FEU2";	BookName[2] = "PMT2";
+	GraphName[3] = "AllInOnePMT3" + postfix;	ColName[3] = "FEU3";	BookName[3] = "PMT3";
+	GraphName[4] = "AllInOneXRay" + postfix;	ColName[4] = "XRay";	BookName[4] = "Neutron";
+	
+	// BookName02[0] = "Neutron";	ColName02[0] = "U";
+	// BookName02[1] = "Neutron";	ColName02[1] = "I";
+	
+	// REVERSED:
+	BookName02[0] = "Neutron";	ColName02[0] = "I";
+	BookName02[1] = "Neutron";	ColName02[1] = "U";
+	BookName02[2] = "";	ColName02[2] = "";	// this variable's values will be loop throgh above BookName & ColName arrays
+	
+	
+	int GraphNumber = 12;
 	int GraphLayersCount = 3;
 	int StartGraphLayer = 2; // zero-based index
 	GraphPage TemplateGraphPage;
@@ -384,6 +405,7 @@ void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer
 	Tree trTemplateFormat;
 	trTemplateFormat = TemplateGraphPage.GetFormat(FPB_ALL, FOB_ALL, TRUE, TRUE);
 	
+	StartLayer = StartLayer - 1;	// convert one-based index to zero-based
 	if (StartLayer < 0) { StartLayer = 0; }
 	
 	for (int i=1; i<=GraphNumber; i++)

@@ -262,7 +262,7 @@ void AutoTextToGraphLayer(GraphPage gp, int GraphLayerIndex, string text)
 	if (0 == TextObj.UpdateThemeIDs(trFormat.Root)) { TextObj.ApplyFormat(trFormat, true, true);	}
     
 	// right text
-	trFormat.Root.Dimension.Left.nVal = 80; // units in % of page
+	trFormat.Root.Dimension.Left.nVal = 75; // units in % of page
 	if (0 == TextObj.UpdateThemeIDs(trFormat.Root)) { TextObj.ApplyFormat(trFormat, true, true);	}
 	int TextLeft = TextObj.Left; //in page (i.e. paper, logical) coordinate units
 		
@@ -700,7 +700,8 @@ void ProcessGraph()
 								{
 									name = StringPrefixIncrease(name);
 								}
-				    		    NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName().Mid(0,4) + GraphNamePostfix);
+				    		    //NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName().Mid(0,4) + GraphNamePostfix);
+				    		    NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName());
 				    		    NewGraphPage.Show = 0;  //hiding new graph window
 				    		    
 				    		    //...and add Postfix to it for LongName
@@ -741,7 +742,8 @@ void ProcessGraph()
 				    		    	
 				    		    	//trTemplateFormat.Save("c:\Tektronix\TemlateFormat.xml" );
 				    		    	
-				    		    string text = TextPrefix + DataBook.Layers(i*OscCounts[0]).GetName().Mid(0,4);		
+				    		    // string text = TextPrefix + DataBook.Layers(i*OscCounts[0]).GetName().Mid(0,4);
+				    		    string text = TextPrefix + DataBook.Layers(i*OscCounts[0]).GetName().Mid(4, 11);
 				    		    AutoTextToGraphLayer(NewGraphPage, GraphLayersCount-1, text);
 				    		    	
 				    		    if (NeedSaveToFile)
@@ -753,6 +755,7 @@ void ProcessGraph()
 				    		    
 				    		    //NewGraphPage.Show = 0; //hiding new graph window
 				    		    NewGraphPage.Detach();
+				    		    //break;
 				    		    
 							} // For all Layers in DataBook
 							trTemplateFormat.Remove();

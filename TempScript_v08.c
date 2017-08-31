@@ -325,23 +325,11 @@ void FillAllInOneGraphLayer(GraphLayer Graph, string DataBookName, string ColNam
 	
 }
 
-void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer)
-{
-	vector<int> skip = {-1};
-	string postfix = "";
-	GraphAllInOne(TemplateGraphPageName, CurvesCount, StartLayer, postfix, skip)
-}
-
-void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer, string postfix)
-{
-	vector<int> skip = {-1};
-	GraphAllInOne(TemplateGraphPageName, CurvesCount, StartLayer, postfix, skip)
-}
 
 void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer, string postfix, vector<int> skip)
 {
 	StringArray GraphName(17), ColName(17), BookName(17), BookName02(3), ColName02(3);
-	
+	/* 2017 05 SERIES
 	GraphName[0] = "";	ColName[0] = "";	BookName[0] = "";
 	GraphName[1] = "AllInOne00" + postfix;	ColName[1] = "PMTD1";	BookName[1] = "OutDPO7054";
 	GraphName[2] = "AllInOne10" + postfix;	ColName[2] = "PMTD2";	BookName[2] = "OutDPO7054";
@@ -360,8 +348,33 @@ void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer
 	BookName02[0] = "OutLeCroy";	ColName02[0] = "Voltage";
 	BookName02[1] = "OutLeCroy";	ColName02[1] = "Current";
 	BookName02[2] = "";	ColName02[2] = "";
+	*/
 	
-	int GraphNumber = 12;
+	// 2016 SERIES
+	GraphName[0] = "";	ColName[0] = "";	BookName[0] = "";
+	GraphName[1] = "AllInOneD1" + postfix;	ColName[1] = "PMTD1";	BookName[1] = "OutDPO7054";
+	GraphName[2] = "AllInOneD2" + postfix;	ColName[2] = "PMTD2";	BookName[2] = "OutDPO7054";
+	GraphName[3] = "AllInOneD3" + postfix;	ColName[3] = "PMTD3";	BookName[3] = "OutDPO7054";
+	GraphName[4] = "AllInOneD4" + postfix;	ColName[4] = "PMTD4";	BookName[4] = "OutDPO7054";
+	GraphName[5] = "AllInOneD5" + postfix;	ColName[5] = "PMTD5";	BookName[5] = "OutLeCroy";
+	GraphName[6] = "AllInOneD6" + postfix;	ColName[6] = "PMTD6";	BookName[6] = "OutLeCroy";
+	GraphName[7] = "AllInOneD7" + postfix;	ColName[7] = "PMTD7";	BookName[7] = "OutLeCroy";
+	GraphName[8] = "AllInOneD8" + postfix;	ColName[8] = "PMTD8";	BookName[8] = "OutLeCroy";
+	GraphName[9] = "AllInOneD9" + postfix;	ColName[9] = "PMTD9";	BookName[9] = "OutTDS3054BL";
+	GraphName[10] = "AllInOneD10" + postfix;	ColName[10] = "PMTD10";	BookName[10] = "OutTDS3054BL";
+	GraphName[11] = "AllInOneD11" + postfix;	ColName[11] = "PMTD11";	BookName[11] = "OutTDS3054BL";
+	GraphName[12] = "AllInOneD12" + postfix;	ColName[12] = "PMTD12";	BookName[12] = "OutTDS3054BL";
+	GraphName[13] = "AllInOneD13" + postfix;	ColName[13] = "PMTD13";	BookName[13] = "OutTDS3054BR";
+	GraphName[14] = "AllInOneS1" + postfix;	ColName[14] = "PMTS1";	BookName[14] = "OutTDS3054BR";
+	GraphName[15] = "AllInOneS2" + postfix;	ColName[15] = "PMTS2";	BookName[15] = "OutTDS3054BR";
+	GraphName[16] = "AllInOneS3" + postfix;	ColName[16] = "PMTS3";	BookName[16] = "OutTDS3054BR";
+	
+	
+	BookName02[0] = "OutTDS2024C";	ColName02[0] = "Voltage";
+	BookName02[1] = "OutTDS2024C";	ColName02[1] = "PreI";
+	BookName02[2] = "";	ColName02[2] = "";	// this variable's values will be loop throgh above BookName & ColName arrays
+	
+	int GraphNumber = 16;
 	int GraphLayersCount = 3;
 	int StartGraphLayer = 2; // zero-based index
 	GraphPage TemplateGraphPage;

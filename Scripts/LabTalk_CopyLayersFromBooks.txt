@@ -1,11 +1,17 @@
 // Discription:
 // Script copies layers from books with names in given string array to the book with specified name ('copy_to$')
+//
+// NOTE: The maximum number of WorksheetPage's (book's) layers is 255.
 
-string copy_to$ = "Book1";	// book to copy layers to
+string copy_to$ = "PMT3";	// book to copy layers to
 
 StringArray copy_from;       // books to copy layers from
-copy_from.Add("NeutronOutCor");
-copy_from.Add("XRayOutCor");
+copy_from.Add("XRay10");
+copy_from.Add("XRay11");
+copy_from.Add("XRay13");
+
+dataset start={2, 2, 2};	// start copy from specified layer
+dataset step={4, 4, 4};		// step for layers loop (number of layers belonging to one shot)
 
 
 //==================================================================
@@ -16,7 +22,7 @@ for (book_idx=1; book_idx<=copy_from.GetSize(); book_idx++)
 {
     window -a %(copy_from.GetAt(book_idx)$);	// activates source Book
     int layers_count = page.nLayers;		
-    for (shoot_idx=1; shoot_idx<=layers_count; shoot_idx++)
+    for (shoot_idx=start[book_idx]; shoot_idx<=layers_count; shoot_idx+=step[book_idx])
     {
     	current_layer = current_layer + 1;
     	window -a %(copy_from.GetAt(book_idx)$);	// activates source Book
@@ -41,6 +47,7 @@ for (book_idx=1; book_idx<=copy_from.GetSize(); book_idx++)
 		// Note: all LabTalk indexes are one-based
 		type "Copying sheet %(copy_from.GetAt(book_idx)$)[$(shoot_idx)] to %(copy_to$)[$(current_layer)]";
 		wrcopy iw:=[%(copy_from.GetAt(book_idx)$)]$(shoot_idx)! ow:=[%(copy_to$)]$(current_layer)! label:=LUC;
+		// LUC <==> copy LongName, Units, Comments
 		
 		page.active = current_layer;					// activates acceptor worksheet
 		for (cc=1; cc<=wks.nCols; cc++)

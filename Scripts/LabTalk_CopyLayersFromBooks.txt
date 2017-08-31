@@ -3,14 +3,16 @@
 //
 // NOTE: The maximum number of WorksheetPage's (book's) layers is 255.
 
-string copy_to$ = "PMT3";	// book to copy layers to
+string copy_to$ = "PMT1";	// book to copy layers to
+// window -a %(copy_to$);
+// layer -dk;				// use this to delete active layer of active book (this won't delete book)
 
 StringArray copy_from;       // books to copy layers from
 copy_from.Add("XRay10");
 copy_from.Add("XRay11");
 copy_from.Add("XRay13");
 
-dataset start={2, 2, 2};	// start copy from specified layer
+dataset start={3, 3, 3};	// start copy from specified layer
 dataset step={4, 4, 4};		// step for layers loop (number of layers belonging to one shot)
 
 

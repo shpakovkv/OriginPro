@@ -1,0 +1,53 @@
+// Discription:
+// Script copies layers from books with names in given string array to the book with specified name ('copy_to$')
+
+string copy_to$ = "Book1";	// book to copy layers to
+
+StringArray copy_from;       // books to copy layers from
+copy_from.Add("NeutronOutCor");
+copy_from.Add("XRayOutCor");
+
+
+//==================================================================
+window -a %(copy_to$);				// activates acceptor Book
+int current_layer = page.nLayers;
+
+for (book_idx=1; book_idx<=copy_from.GetSize(); book_idx++)  
+{
+    window -a %(copy_from.GetAt(book_idx)$);	// activates source Book
+    int layers_count = page.nLayers;		
+    for (shoot_idx=1; shoot_idx<=layers_count; shoot_idx++)
+    {
+    	current_layer = current_layer + 1;
+    	window -a %(copy_from.GetAt(book_idx)$);	// activates source Book
+		page.active = shoot_idx;					// activates source Data worksheet
+
+		string old_layer_name$;
+		old_layer_name$ = wks.name$;
+		string new_layer_name$;
+		new_layer_name$ = old_layer_name$ + "b" + Format(book_idx + 1, "#2")$;
+
+		StringArray ColNames;
+		for (cc=1; cc<=wks.nCols; cc++)
+		{
+			wks.col = cc;						// activates source data column
+			ColNames.Add(wks.col.name$);
+		}
+		window -a %(copy_to$);					// activates acceptor Book
+		newsheet name:=new_layer_name$;
+
+		// LabTalk adress formula: 
+		// [WorkBookName]SheetNameOrIndex!ColumnNameOrIndex[RowIndex] 
+		// Note: all LabTalk indexes are one-based
+		type "Copying sheet %(copy_from.GetAt(book_idx)$)[$(shoot_idx)] to %(copy_to$)[$(current_layer)]";
+		wrcopy iw:=[%(copy_from.GetAt(book_idx)$)]$(shoot_idx)! ow:=[%(copy_to$)]$(current_layer)! label:=LUC;
+		
+		page.active = current_layer;					// activates acceptor worksheet
+		for (cc=1; cc<=wks.nCols; cc++)
+		{
+			wks.col = cc;
+			wks.col.name$ = ColNames.GetAt(cc)$;
+		}
+	}
+}
+type "Done.";

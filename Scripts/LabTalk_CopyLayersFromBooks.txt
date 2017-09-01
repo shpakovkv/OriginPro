@@ -3,17 +3,20 @@
 //
 // NOTE: The maximum number of WorksheetPage's (book's) layers is 255.
 
-string copy_to$ = "PMT1";	// book to copy layers to
+string copy_to$ = "Out2";	// book to copy layers to
 // window -a %(copy_to$);
 // layer -dk;				// use this to delete active layer of active book (this won't delete book)
 
 StringArray copy_from;       // books to copy layers from
-copy_from.Add("XRay10");
-copy_from.Add("XRay11");
-copy_from.Add("XRay13");
+copy_from.Add("Dec26Out2");
+copy_from.Add("Dec27Out2");
 
-dataset start={3, 3, 3};	// start copy from specified layer
-dataset step={4, 4, 4};		// step for layers loop (number of layers belonging to one shot)
+dataset start={1, 1};	// start copy from specified layer
+dataset step={1, 1};		// step for layers loop (number of layers belonging to one shot)
+
+StringArray postfix;
+postfix.Add("");
+postfix.Add("");
 
 
 //==================================================================
@@ -33,7 +36,9 @@ for (book_idx=1; book_idx<=copy_from.GetSize(); book_idx++)
 		string old_layer_name$;
 		old_layer_name$ = wks.name$;
 		string new_layer_name$;
-		new_layer_name$ = old_layer_name$ + "b" + Format(book_idx + 1, "#2")$;
+		// new_layer_name$ = old_layer_name$ + "b" + Format(book_idx + 1, "#2")$;	// modify new layer name
+		new_layer_name$ = old_layer_name$ + postfix.GetAt(book_idx)$;
+		// new_layer_name$ = old_layer_name$;	// copy layer name
 
 		StringArray ColNames;
 		for (cc=1; cc<=wks.nCols; cc++)

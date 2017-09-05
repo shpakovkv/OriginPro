@@ -1,0 +1,24 @@
+/*
+Discription:
+Save all layers of selected WorksheetPage as .csv files
+to the default export folder
+How to use:
+1) Choose WorksheetPage with layers to be exported
+2) Get ShortName of that WorksheetPage
+3) Assign that name to the variable "book_name"
+4) Create a folder for exported files
+5) Export any 1 layer to that folder through menu "File -> Export -> ASCII..." 
+  do not forget to change export settings if needed (export folder, separator, etc.)
+  6) Delete that file if needed
+7) Copy below script and paste it into the Origin's Command Window
+8) Press Enter
+*/
+
+string book_name$ = "DPO7054";
+window -a %(book_name$);			// makes data worksheetpage active
+int layers_count = page.nLayers;	// gets active page layers count
+for (ii=1; ii<=layers_count; ii++)
+{
+	page.active = ii;				// activates Layer[ii]
+	expASC type:=csv;
+	}

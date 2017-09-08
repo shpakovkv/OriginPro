@@ -2,6 +2,7 @@
 Discription:
 Save all layers of selected WorksheetPage as .csv files
 to the default export folder
+
 How to use:
 1) Choose WorksheetPage with layers to be exported
 2) Get ShortName of that WorksheetPage
@@ -9,16 +10,28 @@ How to use:
 4) Create a folder for exported files
 5) Export any 1 layer to that folder through menu "File -> Export -> ASCII..." 
   do not forget to change export settings if needed (export folder, separator, etc.)
-  6) Delete that file if needed
+6) Delete that file if needed
 7) Copy below script and paste it into the Origin's Command Window
 8) Press Enter
 */
 
-string book_name$ = "DPO7054";
-window -a %(book_name$);			// makes data worksheetpage active
-int layers_count = page.nLayers;	// gets active page layers count
-for (ii=1; ii<=layers_count; ii++)
+StringArray book_name;
+book_name.Add("OutDPO7054");
+book_name.Add("OutDPO4054");
+book_name.Add("OutTDS2024");
+book_name.Add("OutTDS3054");
+
+string save_path$ = "D:\Temp\";
+
+for (bb = 1; bb<=book_name.GetSize(); bb++)
 {
-	page.active = ii;				// activates Layer[ii]
-	expASC type:=csv;
+	window -a %(book_name.GetAt(bb)$);
+	int layers_count = page.nLayers;
+	for (ii=1; ii<=layers_count; ii++)
+	{
+		page.active = ii;
+		string save_as$ = save_path$ + wks.name$ + ".csv";
+		//save_as$=;
+		expASC type:=csv path:=save_as$ csvsep:=Semicolon longname:=0 units:=0 comment:=0;
 	}
+}

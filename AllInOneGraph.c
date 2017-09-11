@@ -124,3 +124,49 @@ void GraphAllInOne(string TemplateGraphPageName, string NewGraphName, string pos
 	NewGraphPage.Show = 0; //hiding new graph window
 	NewGraphPage.Detach();
 }
+
+/*
+
+//------------------      LAB_TALK SCRIPT EXAMPLE         -----------------------
+
+//==================================================
+//-----     ONE GRAPH     --------------------------
+//==================================================
+string tmp_graph$ = "TmpAllInOne";
+string new_graph$ = "TestGraph"; // check if exists
+string postfix$ = "_v1";
+int start_layer = 1;
+int count = 105;
+dataset skip_list ={}; // one-based index of layers to be skipped
+StringArray col_names={"U", "I", "D1Fe40"};
+StringArray book_names={"OutXRay", "OutXRay", "OutAxial"};
+
+GraphAllInOne(tmp_graph$, new_graph$, postfix$, start_layer, count, skip_list, col_names, book_names);
+
+
+//==================================================
+//-----     MULTIPLE GRAPHS     --------------------
+//==================================================
+string tmp_graph$ = "TmpAllInOne";
+
+int start_layer = 1;
+int count = 105;
+dataset skip_list ={}; // one-based index of layers to be skipped
+StringArray col_names={"U", "I", "rotate"};
+StringArray book_names={"OutXRay", "OutXRay", "rotate"};
+
+StringArray new_graph_names = {"AllInPMTD2","AllInPMTD4","AllInPMTD3","AllInPMTD1","AllInPMTD6","AllInPMTD8","AllInPMTD7","AllInPMTD5","AllInPMTD11","AllInPMTD12","AllInPMTD10","AllInPMTD9","AllInPMTDS1","AllInPMTDS2"};
+string new_graph_name_postfix$ = "_v2";
+StringArray rotate_cols = {"D2Pb3","D4Pb10","D3Pb30","D1Fe40","D6Pb3","D8Pb10","D7Pb30","D5Fe40","D11Pb50","D12Pb50","D10","D9","DS1","DS2Pb50"};
+StringArray rotate_books = {"OutAxial","OutAxial","OutAxial","OutAxial","OutLatheral","OutLatheral","OutLatheral","OutLatheral","OutHama","OutHama","OutHama","OutHama","OutXRay","OutXRay"};
+int rotate_graph_layer = 3;
+for (idx=1; idx<=rotate_cols.GetSize(); idx++)
+{
+	col_names.SetAt(rotate_graph_layer, %(rotate_cols.GetAt(idx)$));
+	book_names.SetAt(rotate_graph_layer, %(rotate_books.GetAt(idx)$));
+	string name$ = new_graph_names.GetAt(idx)$;
+	string postfix$ = new_graph_name_postfix$;
+	GraphAllInOne(tmp_graph$, name$, postfix$, start_layer, count, skip_list, col_names, book_names);
+}
+
+*/

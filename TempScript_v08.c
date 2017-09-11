@@ -378,6 +378,34 @@ void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer
 	BookName02[2] = "";	ColName02[2] = "";	// this variable's values will be loop throgh above BookName & ColName arrays
 	*/
 	
+	// 2015 04 SERIES
+	GraphName[0] = "";	ColName[0] = "";	BookName[0] = "";
+	GraphName[1] = "AllInOnePMTD2" + postfix;	ColName[1] = "D2Pb3";	BookName[1] = "OutAxial";
+	GraphName[2] = "AllInOnePMTD4" + postfix;	ColName[2] = "D4Pb10";	BookName[2] = "OutAxial";
+	GraphName[3] = "AllInOnePMTD3" + postfix;	ColName[3] = "D3Pb30";	BookName[3] = "OutAxial";
+	GraphName[4] = "AllInOnePMTD1" + postfix;	ColName[4] = "D1Fe40";	BookName[4] = "OutAxial";
+
+	GraphName[5] = "AllInOnePMTD6" + postfix;	ColName[5] = "D6Pb3";	BookName[5] = "OutLatheral";
+	GraphName[6] = "AllInOnePMTD8" + postfix;	ColName[6] = "D8Pb10";	BookName[6] = "OutLatheral";
+	GraphName[7] = "AllInOnePMTD7" + postfix;	ColName[7] = "D7Pb30";	BookName[7] = "OutLatheral";
+	GraphName[8] = "AllInOnePMTD5" + postfix;	ColName[8] = "D5Fe40";	BookName[8] = "OutLatheral";
+
+	GraphName[9] = "AllInOnePMTD11" + postfix;	ColName[9] = "D11Pb50";	BookName[9] = "OutHama";
+	GraphName[10] = "AllInOnePMTD12" + postfix;	ColName[10] = "D12Pb50";	BookName[10] = "OutHama";
+	GraphName[11] = "AllInOnePMTD10" + postfix;	ColName[11] = "D10";	BookName[11] = "OutHama";
+	GraphName[12] = "AllInOnePMTD9" + postfix;	ColName[12] = "D9";	BookName[12] = "OutHama";
+
+	GraphName[13] = "AllInOnePMTDS1" + postfix;	ColName[13] = "DS1";	BookName[13] = "OutXRay";
+	GraphName[14] = "AllInOnePMTDS2" + postfix;	ColName[14] = "DS2Pb50";	BookName[14] = "OutXRay";
+	
+	BookName02[0] = "OutXRay";	ColName02[0] = "U";
+	BookName02[1] = "OutXRay";	ColName02[1] = "I";
+	
+	// REVERSED:
+	//BookName02[0] = "Neutron";	ColName02[0] = "I";
+	//BookName02[1] = "Neutron";	ColName02[1] = "U";
+	BookName02[2] = "";	ColName02[2] = "";	// this variable's values will be loop throgh above BookName & ColName arrays
+	
 	/*
 	// 2014 11 SERIES
 	GraphName[0] = "";	ColName[0] = "";	BookName[0] = "";
@@ -395,6 +423,7 @@ void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer
 	BookName02[2] = "";	ColName02[2] = "";	// this variable's values will be loop throgh above BookName & ColName arrays
 	*/
 	
+	/*
 	// 2013 SERIES
 	GraphName[0] = "";	ColName[0] = "";	BookName[0] = "";
 	GraphName[1] = "AllInOneXRay" + postfix;	ColName[1] = "XRay";	BookName[1] = "Out1";
@@ -407,9 +436,9 @@ void GraphAllInOne(string TemplateGraphPageName, int CurvesCount, int StartLayer
 	//BookName02[1] = "Out2";	ColName02[1] = "U";
 	
 	BookName02[2] = "";	ColName02[2] = "";	// this variable's values will be loop throgh above BookName & ColName arrays
+	*/
 	
-	
-	int GraphNumber = 2;
+	int GraphNumber = 14;
 	int GraphLayersCount = 3;
 	int StartGraphLayer = 2; // zero-based index
 	GraphPage TemplateGraphPage;

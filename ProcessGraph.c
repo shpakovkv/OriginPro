@@ -743,7 +743,8 @@ void ProcessGraph()
 				    		    	//trTemplateFormat.Save("c:\Tektronix\TemlateFormat.xml" );
 				    		    	
 				    		    // string text = TextPrefix + DataBook.Layers(i*OscCounts[0]).GetName().Mid(0,4);
-				    		    string text = TextPrefix + DataBook.Layers(i*OscCounts[0]).GetName().Mid(4, 11);
+				    		    // string text = TextPrefix + DataBook.Layers(i*OscCounts[0]).GetName().Mid(4, 11);
+				    		    string text = TextPrefix + DataBook.Layers(i*OscCounts[0]).GetName();
 				    		    AutoTextToGraphLayer(NewGraphPage, GraphLayersCount-1, text);
 				    		    	
 				    		    if (NeedSaveToFile)

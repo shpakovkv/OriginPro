@@ -98,7 +98,7 @@ string StringPrefixIncrease(string s)
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------
-void FillGraphLayer(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBook, vector<int> OscCount, int GraphNumber, int GraphLayerNumber, StringArray DefaultOptionsLabel, StringArray DataBookNames)
+void FillGraphLayer(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBook, vector<int> OscCount, int GraphNumber, int GraphLayerNumber, StringArray DefaultOptionsLabel, StringArray DataBookNames, bool y_rescale)
 {//filling single GraphLayer with Labels, Curves & Legend.
 //GraphNumber >= 1
 	
@@ -118,6 +118,10 @@ void FillGraphLayer(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBo
 		DataBookNumbers.Add(TempDS[i]);
 	}
 	
+	double y_max = 0;
+	double y_min = 0;
+	double local_min, local_max;
+	uint nIndexMin, nIndexMax, nCountNonMissingValues;
 	//for all ColumnNames
 	for (i=0; i<VariableNames.GetSize(); i++)
 	{//plotting curves
@@ -130,6 +134,14 @@ void FillGraphLayer(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBo
 		}
 		else 
 		{
+			Dataset y_ds;
+			y_ds.Attach(TempWks.Columns(VariableNames[i]));
+			vector y_vec(y_ds);
+			nCountNonMissingValues = y_vec.GetMinMax(local_min, local_max, &nIndexMin, &nIndexMax);
+			if (y_max < local_max) {y_max = local_max;}
+			if (y_min > local_min) {y_min = local_min;}
+			y_ds.Detach();
+
 			//TempDS.Attach(TempWks.Columns(VariableNames[i]));
 			Curve cr;
 			cr.Attach(TempWks.Columns(VariableNames[i]));
@@ -157,12 +169,23 @@ void FillGraphLayer(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBo
 	}
 	TempDS.Detach();
 	
+	if (y_rescale)
+	{
+		Graph.Rescale(OKAXISTYPE_Y);
+	}
+
 	OscNumber.Detach();
 	VariableNames.RemoveAll();
 	DataBookNumbers.RemoveAll();
 	
 	
 }
+
+void YRescale(GraphLayer Graph)
+{//RESCALE Y axis
+	Graph.Rescale(OKAXISTYPE_Y);
+}
+
 
 void FillGraphLayerRepeat(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBook, vector<int> OscCount, int GraphNumber, int GraphLayerNumber, StringArray DefaultOptionsLabel, StringArray DataBookNames, int Repeat, bool IsMainSignal)
 {//filling single GraphLayer with Labels, Curves & Legend.
@@ -288,7 +311,7 @@ void AutoTextToGraphLayer(GraphPage gp, int GraphLayerIndex, string text)
 
 //----------------------------------------------------------------------------------------------------------------
 //=================================================================================================================================
-void ProcessGraph()
+void ProcessGraph(bool y_rescale=false)
 {
 	//variables
 	Dataset GraphLayersCountDS, TempDS;
@@ -300,7 +323,7 @@ void ProcessGraph()
 	GraphPage TemplateGraphPage;
 	vector<string> DataBookNames(1);
 	bool NeedSaveToFile = false;
-	
+	//bool y_rescale = true;
 	//constants
 	string OptionsBookName = "GOptions";
 	StringArray DefaultGlobalOptionsLabel(7), DefaultOptionsLayersPrefix(2), DefaultOptionsLabel(4);
@@ -732,7 +755,7 @@ void ProcessGraph()
 				    		    //filling Layers of NewGraphPage with Curves
 				    	    	for (int j=0; j<GraphLayersCount; j++)
 				    		    {//for all GraphLayers in NewGraphPage
-				    		    	FillGraphLayer(NewGraphPage.Layers(j), OptionsBook.Layers(DefaultOptionsLayersPrefix[1] + (j+1)), DataBook, OscCounts, i+1, j+1, DefaultOptionsLabel, DataBookNames);
+				    		    	FillGraphLayer(NewGraphPage.Layers(j), OptionsBook.Layers(DefaultOptionsLayersPrefix[1] + (j+1)), DataBook, OscCounts, i+1, j+1, DefaultOptionsLabel, DataBookNames, y_rescale);
 				    		    }
 				    		    
 				    		    
@@ -746,7 +769,16 @@ void ProcessGraph()
 				    		    // string text = TextPrefix + DataBook.Layers(i*OscCounts[0]).GetName().Mid(4, 11);
 				    		    string text = TextPrefix + DataBook.Layers(i*OscCounts[0]).GetName();
 				    		    AutoTextToGraphLayer(NewGraphPage, GraphLayersCount-1, text);
-				    		    	
+				    		    
+				    		    if (y_rescale)
+				    		    {
+				    		    	for (int j=0; j<GraphLayersCount; j++)
+									{//for all GraphLayers in NewGraphPage
+										YRescale(NewGraphPage.Layers(j));
+									}
+				    		    }
+				    		    
+				    		    
 				    		    if (NeedSaveToFile)
 									{
 										string FullPath = Project.GetPath() + NewGraphPage.GetName() + ".ogg";

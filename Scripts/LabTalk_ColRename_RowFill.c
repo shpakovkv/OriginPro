@@ -11,7 +11,13 @@ for (bb = 1; bb<=aa.GetSize(); bb++)
 	for (ii = 1; ii<=count; ii++)
 	{
 		page.active = ii;
-		col(1) = {0, 9, 18, 27, 36, 45, 54, 63, 72, 81, 90};
+
+		// for 11 dedectors:
+		// col(1) = {0, 9, 18, 27, 36, 45, 54, 63, 72, 81, 90};
+
+		// for 10 detectors
+		col(1) = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90};
+		
 		wks.col2.name$ = "PeakX";
 		wks.col3.name$ = "PeakY";
 		wks.col4.name$ = "sqrL";

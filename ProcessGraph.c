@@ -98,7 +98,7 @@ string StringPrefixIncrease(string s)
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------
-void FillGraphLayer(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBook, vector<int> OscCount, int GraphNumber, int GraphLayerNumber, StringArray DefaultOptionsLabel, StringArray DataBookNames, bool y_rescale)
+void FillGraphLayer(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBook, vector<int> OscCount, int GraphNumber, int GraphLayerNumber, StringArray DefaultOptionsLabel, StringArray DataBookNames)
 {//filling single GraphLayer with Labels, Curves & Legend.
 //GraphNumber >= 1
 	
@@ -168,11 +168,6 @@ void FillGraphLayer(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBo
 		i++;
 	}
 	TempDS.Detach();
-	
-	if (y_rescale)
-	{
-		Graph.Rescale(OKAXISTYPE_Y);
-	}
 
 	OscNumber.Detach();
 	VariableNames.RemoveAll();
@@ -181,9 +176,92 @@ void FillGraphLayer(GraphLayer Graph, Worksheet OptionsWks, WorksheetPage DataBo
 	
 }
 
-void YRescale(GraphLayer Graph)
+void YAutoScale(GraphLayer GL, Worksheet OptionsWks, vector<int> OscCount, int GraphNumber, int GraphLayerNumber, StringArray DefaultOptionsLabel, StringArray DataBookNames)
+{
+  Dataset TempDS, OscNumber;
+  StringArray VariableNames;
+  vector<int> DataBookNumbers(0);
+  
+  //getting data columns names list
+  OptionsWks.Columns(DefaultOptionsLabel[1]).GetStringArray(VariableNames); 
+  
+  //getting access to 'OscNumber'
+  OscNumber.Attach(OptionsWks.Columns(DefaultOptionsLabel[0]));
+  
+  TempDS.Attach(OptionsWks.Columns(DefaultOptionsLabel[3]));
+  for (int i=0; i<=TempDS.GetUpperBound(); i++)
+  {
+    DataBookNumbers.Add(TempDS[i]);
+  }
+  TempDS.Detach();
+  
+  double y_max = 0;
+  double y_min = 0;
+  double local_min, local_max;
+  uint nIndexMin, nIndexMax, nCountNonMissingValues;
+  //for all ColumnNames
+  for (i=0; i<VariableNames.GetSize(); i++)
+  {//plotting curves
+    Worksheet TempWks(Project.WorksheetPages(DataBookNames[DataBookNumbers[i]-1]).Layers((GraphNumber-1)*OscCount[DataBookNumbers[i]-1]+OscNumber[i]-1));
+    
+    //data access check. Exit plotting if fail.
+    if (!TempWks.Columns(VariableNames[i])) 
+    {
+      out_str("Error!\nData access error in Graph#"+GraphNumber+", Layer#" + GraphLayerNumber + ", Curve#" + (i+1) + "\nColumn '"+VariableNames[i]+"' at layer #"+((GraphNumber-1)*OscCount[DataBookNumbers[i]-1]+OscNumber[i])+" of '"+DataBookNames[DataBookNumbers[i]-1]+"' WorksheetPage is missing.\nCan't plot another curves in that layer.");
+    }
+    else 
+    {
+      Dataset y_ds;
+      y_ds.Attach(TempWks.Columns(VariableNames[i]));
+      vector y_vec(y_ds);
+      nCountNonMissingValues = y_vec.GetMinMax(local_min, local_max, &nIndexMin, &nIndexMax);
+      if (y_max < local_max) {y_max = local_max;}
+      if (y_min > local_min) {y_min = local_min;}
+      y_ds.Detach();
+    }
+    TempWks.Detach();
+  }
+
+  Scale Sc(GL.Y);
+  if (y_max < 0) {y_max = 0;}
+  if (y_min > 0) {y_min = 0;}
+  //Sc.To = y_max * 0.001;
+  Sc.To = y_max * 1.1;
+  //Sc.From = y_min * 0.001;
+  Sc.From = y_min * 1.1;
+  
+  TempDS.Detach();
+  OscNumber.Detach();
+  VariableNames.RemoveAll();
+  DataBookNumbers.RemoveAll();
+}
+
+void JustTest(string GraphPageName, int LayerNum)
+{
+	GraphPage GP = Project.GraphPages(GraphPageName);
+	if (GP)
+	{
+		GraphLayer GL = GP.Layers(LayerNum);
+		if (!GL) {throw 100;}
+		Axis axesY = GL.YAxis;
+		axesY.Scale.IncrementBy.nVal = 0; // 0=increment by value; 1=number of major ticks
+		axesY.Scale.Value.dVal = 0.2; // Increment value
+		
+		//axesY.Scale.IncrementBy.nVal = 1; // 0: increment by value; 1: number of major ticks
+		//axesY.Scale.MajorTicksCount.nVal = 5;
+	}
+}
+
+void YRescale(GraphLayer GL, double y_min, double y_max)
 {//RESCALE Y axis
-	Graph.Rescale(OKAXISTYPE_Y);
+	
+	Scale Sc(GL.Y);
+	Sc.To = y_max;
+	Sc.From = y_min;
+	
+	// DWORD dwCntrl = OKAXISTYPE_Y;
+	// out_str("dword = " + dwCntrl);
+	// Graph.Rescale(dwCntrl);
 }
 
 
@@ -755,7 +833,7 @@ void ProcessGraph(bool y_rescale=false)
 				    		    //filling Layers of NewGraphPage with Curves
 				    	    	for (int j=0; j<GraphLayersCount; j++)
 				    		    {//for all GraphLayers in NewGraphPage
-				    		    	FillGraphLayer(NewGraphPage.Layers(j), OptionsBook.Layers(DefaultOptionsLayersPrefix[1] + (j+1)), DataBook, OscCounts, i+1, j+1, DefaultOptionsLabel, DataBookNames, y_rescale);
+				    		    	FillGraphLayer(NewGraphPage.Layers(j), OptionsBook.Layers(DefaultOptionsLayersPrefix[1] + (j+1)), DataBook, OscCounts, i+1, j+1, DefaultOptionsLabel, DataBookNames);
 				    		    }
 				    		    
 				    		    
@@ -774,7 +852,7 @@ void ProcessGraph(bool y_rescale=false)
 				    		    {
 				    		    	for (int j=0; j<GraphLayersCount; j++)
 									{//for all GraphLayers in NewGraphPage
-										YRescale(NewGraphPage.Layers(j));
+										YAutoScale(NewGraphPage.Layers(j), OptionsBook.Layers(DefaultOptionsLayersPrefix[1] + (j+1)), OscCounts, i+1,j+1, DefaultOptionsLabel, DataBookNames);
 									}
 				    		    }
 				    		    

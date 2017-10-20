@@ -1,23 +1,39 @@
+/*
+The script extracts N characters from a Layer name, starting from StartIdx index, 
+then replaces the old layer name with the new string.
+The script repeats the operation for all Layers of all specified Book(s).
+
+How to use:
+1) Specify the Book(s) name(s).
+2) Specify the index of the first character from which to start extracting substring.
+3) Specify the number of characters to extract.
+4) Paste the script to the Command Window and press Enter.
+*/
+
+// add the short names of the target books
 StringArray aa;       
 aa.Add("PeaksSeries1");  // WorksheetPage name
 aa.Add("PeaksSeries2");
 aa.Add("PeaksSeries3");
 aa.Add("PeaksSeries4");
-int start_idx = 5;  // one-based index of the first character to be left
-// first (start_idx - 1) characters will be deleted
 
-int char_count = 11; // the number of characters to be left (all others will be deleted)
+// the index of the first letter to be left (previous letters will be deleted)
+// NOTE: the index of the first letter is 1
+int StartIdx = 5;  
 
-//=======================================================
-for (bb = 1; bb<=aa.GetSize(); bb++)
+// the number of characters to be left (all the others will be deleted)
+int CharCount = 11; 
+
+//---------------------------------------------------
+for (iBook = 1; iBook<=aa.GetSize(); iBook++)
 {
-	window -a %(aa.GetAt(bb)$);
+	window -a %(aa.GetAt(iBook)$);
 	int count = page.nLayers;	
-	for (ii = 1; ii<=count; ii++)
+	for (iLayer = 1; iLayer<=count; iLayer++)
 	{
-		page.active = ii;
-		string ss$ = layer.name$;
-		ss$ = ss.Mid(start_idx, char_count)$;
-		layer.name$ = ss$;
+		page.active = iLayer;
+		string NewName$ = layer.name$;
+		NewName$ = NewName.Mid(StartIdx, CharCount)$;
+		layer.name$ = NewName$;
 	}
 }

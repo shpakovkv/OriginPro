@@ -17,10 +17,10 @@ All full manuals are in the "Manuals" folder.
 
 ##### How to use OriginC scripts:
 1. Open a project with data.
-2. Append .opj file of the tool you need to your project.
+2. Append (File -> Append...) .opj file of the tool you need to your project.
 3. In the table that appears, enter all the required parameters.
-4. Open *Code Builder*, open .c file of the tool you need and add it to the *Workspace*.
-5. Compile all in the *Code Builder*.
+4. Open *Code Builder* (Alt+4), open .c file (Ctrl+O) of the tool you need and add it to the *Workspace* (Ctrl+W).
+5. Compile all in the *Code Builder* (Alt+F8).
 6. Return to the OriginPro project and use the appropriate script to start the process or just click the "Process" button in the tool parameters table (this button will not work if you changed the short name of the parameters table).
 
 ##### How to use LabTalk scripts:

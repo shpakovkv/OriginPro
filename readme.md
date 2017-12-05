@@ -4,7 +4,7 @@ SignalProcess project
 
 The program is intended for initial processing and analysis of experimental data (digital signals of detectors).
 
-The project consists of the following tools:
+###### The project consists of the following tools:
 * **ProcessSignals** - initial data processing
 * **ProcessGraph** and **AllInOneGraph** - automatization of plotting process
 * **SignalAnalysisProcess** - search for peaks
@@ -15,7 +15,7 @@ The project consists of the following tools:
 All parts are tested and working properly (except TempScript).  
 All full manuals are in the "Manuals" folder.
 
-How to use OriginC scripts:
+###### How to use OriginC scripts:
 1. Open a project with data.
 2. Append .opj file of the tool you need to your project.
 3. In the table that appears, enter all the required parameters.
@@ -23,65 +23,59 @@ How to use OriginC scripts:
 5. Compile all in the *Code Builder*.
 6. Return to the OriginPro project and use the appropriate script to start the process or just click the "Process" button in the tool parameters table (this button will not work if you changed the short name of the parameters table).
 
-How to use LabTalk scripts:
+###### How to use LabTalk scripts:
 1. Change the values of the script parameters (in the parameters section) according to your needs (follow the instructions in the comments).
 2. Paste changed script to the *Command Window* in your OriginPro project and press Enter.
 
 ---
 
-ProcessSignals:
----------------
+## ProcessSignals:
 
 The script is intended for initial processing of experimental data (digital signals of detectors).
 It allows to multiply the data (samples by time and amplitude axes) by the specified multiplier and subtract the specified time delay independently for each signal. And also the script allows you to set the offset value along the time axis independently for each *shot*. A *shot* is one record (one result), which can consist of several signals and even files, including different formats, due to the use of several different recording devices during the experiment.
 
 
-Consists of: 
+###### Consists of: 
 * **ProcessSignals.c** - OriginC script
 * **ProcessSignals.opj** - OriginPro project with tables for entering parameters.
 
-Usefull LabTalk scripts:
+###### Usefull LabTalk scripts:
 * **LabTalk_ProcessSignals.c**
 * **LabTalk_LayerRenamer.c**
 * **LabTalk_LayersNameCutter.c**
 
-ProcessGraph
-------------
+## ProcessGraph
 
 \**description in development*\*
 
-Consists of: 
+###### Consists of: 
 * **ProcessGraph.c** - OriginC script
 * **ProcessGraph.opj** - OriginPro project with tables for entering parameters.
 
-AllInOneGraph
--------------
+## AllInOneGraph
 
 \**description in development*\*
 
-Consists of: 
+###### Consists of: 
 * **AllInOneGraph.c** - OriginC script 
 * **LabTalk_GraphAllInOne_single.c** - LabTalk editable script for entering parameters (for one graph)
 * **LabTalk_GraphAllInOne_multiple.c** - LabTalk editable script for entering parameters (for several different graphs)
 
-SignalAnalysisProcess
----------------------
+## SignalAnalysisProcess
 
 \**description in development*\*
 
-Process_FFT
------------
+## Process_FFT
 
 \**description in development*\*
 
 ---
 
-LabTalk scripts
----------------
+## LabTalk scripts
 
 \**description in development*\*
 
-Includes:
+###### Includes:
 * **LabTalk_3in1Script.c**                
 * **LabTalk_ColRename.c**                 
 * **LabTalk_ColRename_RowFill.c**         
@@ -101,8 +95,7 @@ Includes:
 
 ---
 
-Optical_Filters
----------------
+## Optical_Filters
 
 OriginPro project contains table with spectral characteristics of various color optical glass from GOST standart 9411-81 list.
 Allow you to easily create spectral absorption or transmission graphs for a set of several different filters of a given thickness.

@@ -61,7 +61,8 @@ All you need is to create only one graph - a template. Then you tell the script 
 
 The script is indendet for automatization of plotting all-in-one style graph, where each layer of the graph contains all or almost all (you can exclude some shot numbers) the data (set of curves) obtained from a certain sensor during the whole series of experiments. 
 
-[<img src="" title="An example of AllInOne graph" alt="Drawing" width="300">]()
+[<img src="https://raw.githubusercontent.com/shpakovkv/OriginPro/master/GraphExample/allinone_example.png" title="An example of AllInOne graph" alt="Drawing" width="300">](https://raw.githubusercontent.com/shpakovkv/OriginPro/master/GraphExample/allinone_example.png)
+
 
 Such graphs visualize the statistics of detector signals, for example, the time of appearance of a signal, the fluctuation of its shape, etc.
 

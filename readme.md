@@ -32,29 +32,38 @@ All full manuals are in the "Manuals" folder.
 ## ProcessSignals:
 
 The script is intended for initial processing of experimental data (digital signals of detectors).
-It allows to multiply the data (samples by time and amplitude axes) by the specified multiplier and subtract the specified time delay independently for each signal. And also the script allows you to set the offset value along the time axis independently for each *shot*. A *shot* is one record (one result), which can consist of several signals and even files, including different formats, due to the use of several different recording devices during the experiment.
+It allows to multiply the data (time and/or amplitude values) by the specified multiplier and subtract the specified time delay or substract specified subtrahend from amplitude values independently for each signal. And also the script allows you to set the offset value along the time axis independently for each *shot*. A *shot* is one record (one result), which may consist of several signals and even files, including different formats, due to the use of several different recording devices during the experiment.
 
 
 ##### Consists of: 
 * **ProcessSignals.c** - OriginC script
-* **ProcessSignals.opj** - OriginPro project with tables for entering parameters.
+* **ProcessSignals.opj** - OriginPro project with the table for entering parameters.
 
 ##### Usefull LabTalk scripts:
-* **LabTalk_ProcessSignals.c**
-* **LabTalk_LayerRenamer.c**
-* **LabTalk_LayersNameCutter.c**
+* **LabTalk_ProcessSignals.c** - allows you to use several tables with parameters for simultaneous processing of several tables with data
 
 ## ProcessGraph
 
-\**description in development*\*
+The script is intended for automatization of plotting graphs with a completely identical structure, but with different data. This is useful for visualizing the results of a series of experiments.  
+
+All you need is to create only one graph - a template. Then you tell the script where to find the data by entering some values to the parameters table and the script will create all the other graphs. Also the script can save the graphs in OGG format during the process.
 
 ##### Consists of: 
 * **ProcessGraph.c** - OriginC script
-* **ProcessGraph.opj** - OriginPro project with tables for entering parameters.
+* **ProcessGraph.opj** - OriginPro project with the table for entering parameters.
+
+##### Usefull LabTalk scripts:
+* **LabTalk_ProcessGraph.c** - allows you to use several different graph templates and, accordingly, several tables with parameters for simultaneous processing of several series of graphs
+* **LabTalk_LayerRenamer.c** and **LabTalk_LayersNameCutter.c** - each layer's name (in data table) is used in each graph's name, it is recommended use only shot number as layer name
+
 
 ## AllInOneGraph
 
-\**description in development*\*
+The script is indendet for automatization of plotting all-in-one style graph, where each layer of the graph contains all or almost all (you can exclude some shot numbers) the data (set of curves) obtained from a certain sensor during the whole series of experiments. 
+
+[<img src="" title="An example of AllInOne graph" alt="Drawing" width="300">]()
+
+Such graphs visualize the statistics of detector signals, for example, the time of appearance of a signal, the fluctuation of its shape, etc.
 
 ##### Consists of: 
 * **AllInOneGraph.c** - OriginC script 

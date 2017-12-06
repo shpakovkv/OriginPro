@@ -39,7 +39,7 @@ It allows to multiply the data (time and/or amplitude values) by the specified m
 * **ProcessSignals.c** - OriginC script
 * **ProcessSignals.opj** - OriginPro project with the table for entering parameters.
 
-##### Usefull LabTalk scripts:
+##### Useful LabTalk scripts:
 * **LabTalk_ProcessSignals.c** - allows you to use several tables with parameters for simultaneous processing of several tables with data
 
 ## ProcessGraph
@@ -52,7 +52,7 @@ All you need is to create only one graph - a template. Then you tell the script 
 * **ProcessGraph.c** - OriginC script
 * **ProcessGraph.opj** - OriginPro project with the table for entering parameters.
 
-##### Usefull LabTalk scripts:
+##### Useful LabTalk scripts:
 * **LabTalk_ProcessGraph.c** - allows you to use several different graph templates and, accordingly, several tables with parameters for simultaneous processing of several series of graphs
 * **LabTalk_LayerRenamer.c** and **LabTalk_LayersNameCutter.c** - each layer's name (in data table) is used in each graph's name, it is recommended use only shot number as layer name
 
@@ -61,7 +61,7 @@ All you need is to create only one graph - a template. Then you tell the script 
 
 The script is indendet for automatization of plotting all-in-one style graph, where each layer of the graph contains all or almost all (you can exclude some shot numbers) the data (set of curves) obtained from a certain sensor during the whole series of experiments. 
 
-[<img src="https://raw.githubusercontent.com/shpakovkv/OriginPro/master/GraphExample/allinone_example.png" title="An example of AllInOne graph" alt="Drawing" width="300">](https://raw.githubusercontent.com/shpakovkv/OriginPro/master/GraphExample/allinone_example.png)
+[<img src="https://raw.githubusercontent.com/shpakovkv/OriginPro/master/GraphExample/allinone_example.png" alt="Example of all-in-one graph" width="300">](https://raw.githubusercontent.com/shpakovkv/OriginPro/master/GraphExample/allinone_example.png)
 
 
 Such graphs visualize the statistics of detector signals, for example, the time of appearance of a signal, the fluctuation of its shape, etc.

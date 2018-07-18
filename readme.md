@@ -73,7 +73,9 @@ Such graphs visualize the statistics of detector signals, for example, the time 
 
 ## SignalAnalysisProcess
 
-\**description in development*\*
+ПРограмма предназначена для нахождения и анализа максимумов (минимумов) выбранных сигналов в выбранном интервале времени. Программа находит максимумы, фронты нарастания и спада, а также ширину на полувысоте. Результаты выводятся в виде таблицы и графиков (превью). 
+
+Пример графика.
 
 ## Process_FFT
 

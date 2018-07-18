@@ -1,5 +1,6 @@
 /*
 The script deletes first N1 rows with X < minX, and last N2 rows with X > maxX. 
+You must specify the index of column to check minX value and the index of column to check maxX value.
 The script runs on all layers of the specified WorksheetPages (WorkBooks).
 
 How to use:
@@ -10,12 +11,16 @@ How to use:
 5) Paste the script to the Command Window and press Enter.
 */
 StringArray BookNames;
-BookNames.Add("Book1");
+BookNames.Add("OutTDS3054BR");
+BookNames.Add("OutTDS3054BL");
+BookNames.Add("OutTDS2024C");
+BookNames.Add("OutLeCroy");
+BookNames.Add("OutDPO7054");
 
-double minX = 20.0;
+double minX = -100.0;
 int minXcolumn = 1;
-double maxX = 50.0;
-int maxXcolumn = 3;
+double maxX = 810.0;
+int maxXcolumn = 1;
 
 
 //--------------------------------------------------------

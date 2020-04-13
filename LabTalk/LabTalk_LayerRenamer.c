@@ -20,13 +20,21 @@ How to use:
 5) Paste the script to the Command Window of an OriginPro project and press Enter.
 */
 //=======================================
-// setup
-StringArray bookNames = {"Book1"};  // list of books whose layers need to be renamed 
+// SETUP
 
-int increment = 0;			// changes the number of the first layer/group by this value
+// the list of the WorksheetPages whose layers need to be renamed
+StringArray bookNames = {"Book1", "Book2"};  
+
+// by default the number of the first layer/group is 1
+// but you can increase/decrease it by this parameter
+int increment = 0;
+
+// the name of the layers will be a number with leading zeros 
+// with this total number of digits
 int layerNumberDigits = 4;  
 
-StringArray grNames = {"Gen", "Return", "Volt"};  // group members (layers) names
+// group members (layers) names
+StringArray grNames = {"CH1", "CH2", "CH3"};  
 
 //=======================================
 // initialization

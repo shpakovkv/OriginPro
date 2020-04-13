@@ -9,25 +9,23 @@ How to use:
 3) Specify the number of characters to extract.
 4) Paste the script to the Command Window and press Enter.
 */
+//=================================================
+// SETUP
 
 // add the short names of the target books
-StringArray aa;       
-aa.Add("PeaksSeries1");  // WorksheetPage name
-aa.Add("PeaksSeries2");
-aa.Add("PeaksSeries3");
-aa.Add("PeaksSeries4");
+StringArray bookNames = {"Book1", "Book2"};  // the list of the WorksheetPages to be processed
 
 // the index of the first letter to be left (previous letters will be deleted)
 // NOTE: the index of the first letter is 1
-int StartIdx = 5;  
+int StartIdx = 5;
 
 // the number of characters to be left (all the others will be deleted)
-int CharCount = 11; 
+int CharCount = 11;
 
 //---------------------------------------------------
-for (iBook = 1; iBook<=aa.GetSize(); iBook++)
+for (iBook = 1; iBook<=bookNames.GetSize(); iBook++)
 {
-	window -a %(aa.GetAt(iBook)$);
+	window -a %(bookNames.GetAt(iBook)$);
 	int count = page.nLayers;	
 	for (iLayer = 1; iLayer<=count; iLayer++)
 	{

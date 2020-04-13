@@ -39,15 +39,15 @@
 
 Чтобы программа работала нужно файл с ее кодом (.c) добавить в рабочее пространство компилятора для этого откройте CodeBuilder (шестеренка на панели инструментов OriginPro или Alt+4)
 
-![codebuilder_open.png](//res/codebuilder_open.jpg "Alt + 4")
+![codebuilder_open.png](https://github.com/shpakovkv/OriginPro/tree/master/res/codebuilder_open.jpg "Alt + 4")
 
 В CodeBuilder'е откройте файл кода ".c", затем добавьте его в рабочее пространство - меню File -> add to Workspace или Ctrl+W. После этого в окне Workspace в папке User должен появиться этот файл.
 
-![codebuilder_addtoworkspace.jpg](//res/codebuilder_addtoworkspace.jpg "Ctrl+W")
+![codebuilder_addtoworkspace.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/codebuilder_addtoworkspace.jpg "Ctrl+W")
 
 Скомпилируйте код (Build -> Rebuild All или Alt+8) и убедитесь, что компилирование закончилось успешно (в окне Output в самой нижней строчке должно быть ссобщение "Done!").
 
-![codebuilder_builddone.jpg](//res/codebuilder_builddone.jpg "ALt+8")
+![codebuilder_builddone.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/codebuilder_builddone.jpg "ALt+8")
 
 Таким образом в рабочее пространство CodeBuilder'а в папку User можно добавить несколько файлов .c и все они останутся там даже после перезапуска OriginPro. Но чтобы они работали при каждом перезапуске OriginPro необходимо открывать CodeBuilder и запускать процесс компиляции (Alt+8), после чего можно закрыть CodeBuilder, при этом все скомпилированные программы будут доступны из окна OriginPro до его закрытия.
 
@@ -117,7 +117,7 @@ for (bb = 1; bb<=bookNames.GetSize(); bb++)
 
 После настройки скрипта скопируйте его (Ctrl+A, Ctrl+C). Откройте свой проект в OriginPro, откройте Command Window (меню Window -> Command Window или Alt+3).
 
-![labtalk_commandwindow.jpg](//res/labtalk_commandwindow.jpg "Command Window")
+![labtalk_commandwindow.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/labtalk_commandwindow.jpg "Command Window")
 
 Вставьте туда скрипт и запустите на выполнение (Enter).
 
@@ -150,11 +150,11 @@ for (bb = 1; bb<=bookNames.GetSize(); bb++)
 1. Импорт всех файлов в одну таблицу Origin. Тогда в таблице появится **N*K** слоев. *Для старых версий OriginPro максимальное количество слоев в таблице равно 255.*
 2. Импортировать данные с каждого устройства записи в отдельную таблицу. Тогда мы получим **K** таблиц и **N** слоев в каждой.
 
-![import_menu.jpg](//res/import_menu.jpg "Import Files")
+![import_menu.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/import_menu.jpg "Import Files")
 
 Перед импортом необходимо создать новую пустую таблицу (empty Workbook Window) и выделить ее (сделать активным ее окном). Импорт файлов ".csv" осуществляется через пункт меню File -> Import -> Comma Delimited (CSV), который открывает диалоговое окно выбора файлов. Сразу несколько файлов можно выбрать через Ctrl или Shift. После выбора файлов необходимо добавить их в список импорта кнопкой "«Add File(s)". После составления списка импорта следует удостовериться, что все файлы идут по списку в нужной последовательности, и затем нажать "Ok". После этого появится диалоговое окно выбора параметров импорта.
 
-![import_parameters.jpg](//res/import_parameters.jpg "Import Files")
+![import_parameters.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/import_parameters.jpg "Import Files")
 
 ##### Import Options
 * **Delimeter** - тип разделителя лучше установить вручную. Во всех файлах, импортируемых одновременно, тип разделителя **должен быть одинаковый**.
@@ -167,26 +167,26 @@ for (bb = 1; bb<=bookNames.GetSize(); bb++)
 * В пункте Number Of Main Header Lines необходимо указать количество строк заголовка файла (которое можно узнать, открыв файл с данными в текстовом редакторе).
 * Если в  импортируемых одновременно файлах размер заголовка отличается, то нужно указать максимальное количество строк *(при этом из файлов количеством HeaderLines на N меньше указанного при импорте будет вырезано N первых строк данных,- это нужно учитывать).*
 
-![csv_headerlines.jpg](//res/csv_headerlines.jpg "Header Lines")
+![csv_headerlines.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/csv_headerlines.jpg "Header Lines")
 
 ##### Partial Import
 Некоторые осциллографы записывают в файл с данными пустые колонки, такие пустые ячейки могут вызвать ошибки в работе программ и скриптов. Их необходимо пропустить при импорте:
 * **Start Col** - пропустить все колонки до этого номера (нумерация начинается с 1)
 * **End Col** - пропустить все колонки после этого номера
 
-![import_partial.jpg](//res/import_partial.jpg "Partial Import")
+![import_partial.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/import_partial.jpg "Partial Import")
 
 Подготовка таблиц
 -----------------
 У каждой таблицы, графика и любого другого "окна" в OriginPro есть параметр **ShortName** - это уникальное **имя** объекта, по которому к нему может обратиться скрипт или программа. ShortName может состоять только из последовательности латинских букв (регистр имеет значение!) и цифр, не может начинаться с цифры и не может превышать 13 символов. У двух разных объектов OriginPro не может быть одинаковых имен.
 
-![book_shortname.jpg](//res/book_shortname.jpg "Unique ShortName")
+![book_shortname.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/book_shortname.jpg "Unique ShortName")
 
 Также у каждого объекта в OriginPro есть параметр **LongName** - это заголовок, который может содержать большое количество почти любых символов (в т.ч. русские буквы). Этот параметр ни на что не влияет и может совпадать у разных объектов.
 
 После импорта должно получиться несколько таблиц с **N*K** слоями, где **N** - это количество выстрелов и для всех таблиц оно одинаково, **K** - это количество осциллографов/каналов записанных отдельными файлами и импортированных в одну таблицу, **K > 0**, и для каждой таблицы **K** свое.
 
-![book_layernames.jpg](//res/book_layernames.jpg "Layers")
+![book_layernames.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/book_layernames.jpg "Layers")
 
 Для удобства, а также корректной работы программы построения графиков необходимо, чтобы имена всех слоев таблиц начинались с 4х-значного номера выстрела. Если файлы с данными были пронумерованы в соответствии с предложенной выше рекомендацией ([prefix][N-number][separator][K-number][postfix].[ext]), то привести имена слоев к требуемому виду можно с помощью скрипта **LabTalk_LayersNameCutter.c**, т.к. имя каждого слоя совпадает с именем файла, данные из которого были импортированы на этот слой. Все, что нужно сделать, это вырезать prefix и, по желанию, postfix. Для этого открываем файл скрипта и в блоке SEUP настраиваем параметры:
 

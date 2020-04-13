@@ -43,11 +43,11 @@
 
 В CodeBuilder'е откройте файл кода ".c", затем добавьте его в рабочее пространство - меню File -> add to Workspace или Ctrl+W. После этого в окне Workspace в папке User должен появиться этот файл.
 
-[<img src="//res/codebuilder_addtoworkspace.png?raw=true" alt="codebuilder_addtoworkspace.jpg" height="300">](//res/codebuilder_addtoworkspace.png)
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/codebuilder_addtoworkspace.png?raw=true" alt="codebuilder_addtoworkspace.jpg" height="300">](//res/codebuilder_addtoworkspace.png)
 
 Скомпилируйте код (Build -> Rebuild All или Alt+8) и убедитесь, что компилирование закончилось успешно (в окне Output в самой нижней строчке должно быть ссобщение "Done!").
 
-[<img src="//res/codebuilder_builddone.png" alt="codebuilder_builddone.jpg" height="300">](//res/codebuilder_builddone.png)
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/codebuilder_builddone.png?raw=true" alt="codebuilder_builddone.jpg" height="150">](//res/codebuilder_builddone.png)
 
 Таким образом в рабочее пространство CodeBuilder'а в папку User можно добавить несколько файлов .c и все они останутся там даже после перезапуска OriginPro. Но чтобы они работали при каждом перезапуске OriginPro необходимо открывать CodeBuilder и запускать процесс компиляции (Alt+8), после чего можно закрыть CodeBuilder, при этом все скомпилированные программы будут доступны из окна OriginPro до его закрытия.
 
@@ -64,7 +64,7 @@
 
 Все LabTalk скрипты записаны отдельными файлами ".c". В начале такого фала находится (в виде комментария к коду) краткое описание скрипта и как им пользоваться. Далее идет блок с настройками  в виде присвоения переменным определенных значений. Настройка скрипта заключается в изменении этих значений. Пример скрипта (LabTalk_SaveLayersToCSVs.c):
 
-```
+```c
 /*
 Discription:
 Save all layers of selected WorksheetPage(s) as .csv files
@@ -112,12 +112,11 @@ for (bb = 1; bb<=bookNames.GetSize(); bb++)
 	}
 }
 ```
-
 После настроек идет сам код скрипта. Там можно подправить логику работы скрипта, если это вам зачем-то понадобилось, и при этом вы разбираетесь в коде и знаете, что делаете.
 
 После настройки скрипта скопируйте его (Ctrl+A, Ctrl+C). Откройте свой проект в OriginPro, откройте Command Window (меню Window -> Command Window или Alt+3).
 
-![labtalk_commandwindow.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/labtalk_commandwindow.png?raw=true "Command Window")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/labtalk_commandwindow.png?raw=true" alt="labtalk_commandwindow.png" height="170">](https://github.com/shpakovkv/OriginPro/blob/master/res/labtalk_commandwindow.png "Command Window")
 
 Вставьте туда скрипт и запустите на выполнение (Enter).
 
@@ -150,11 +149,11 @@ for (bb = 1; bb<=bookNames.GetSize(); bb++)
 1. Импорт всех файлов в одну таблицу Origin. Тогда в таблице появится **N*K** слоев. *Для старых версий OriginPro максимальное количество слоев в таблице равно 255.*
 2. Импортировать данные с каждого устройства записи в отдельную таблицу. Тогда мы получим **K** таблиц и **N** слоев в каждой.
 
-![import_menu.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/import_menu.png?raw=true "Import Files")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/import_menu.png?raw=true" alt="import_menu.png" height="400">](https://github.com/shpakovkv/OriginPro/blob/master/res/import_menu.png "Import Files")
 
 Перед импортом необходимо создать новую пустую таблицу (empty Workbook Window) и выделить ее (сделать активным ее окном). Импорт файлов ".csv" осуществляется через пункт меню File -> Import -> Comma Delimited (CSV), который открывает диалоговое окно выбора файлов. Сразу несколько файлов можно выбрать через Ctrl или Shift. После выбора файлов необходимо добавить их в список импорта кнопкой "«Add File(s)". После составления списка импорта следует удостовериться, что все файлы идут по списку в нужной последовательности, и затем нажать "Ok". После этого появится диалоговое окно выбора параметров импорта.
 
-![import_parameters.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/import_parameters.png?raw=true "Import Files")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/import_parameters.png?raw=true" alt="import_parameters.png" height="500">](https://github.com/shpakovkv/OriginPro/blob/master/res/import_parameters.png "Import Files")
 
 ##### Import Options
 * **Delimeter** - тип разделителя лучше установить вручную. Во всех файлах, импортируемых одновременно, тип разделителя **должен быть одинаковый**.
@@ -167,30 +166,30 @@ for (bb = 1; bb<=bookNames.GetSize(); bb++)
 * В пункте Number Of Main Header Lines необходимо указать количество строк заголовка файла (которое можно узнать, открыв файл с данными в текстовом редакторе).
 * Если в  импортируемых одновременно файлах размер заголовка отличается, то нужно указать максимальное количество строк *(при этом из файлов количеством HeaderLines на N меньше указанного при импорте будет вырезано N первых строк данных,- это нужно учитывать).*
 
-![csv_headerlines.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/csv_headerlines.png?raw=true "Header Lines")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/csv_headerlines.png?raw=true" alt="csv_headerlines.png" height="600">](https://github.com/shpakovkv/OriginPro/blob/master/res/csv_headerlines.png "Header Lines")
 
 ##### Partial Import
 Некоторые осциллографы записывают в файл с данными пустые колонки, такие пустые ячейки могут вызвать ошибки в работе программ и скриптов. Их необходимо пропустить при импорте:
 * **Start Col** - пропустить все колонки до этого номера (нумерация начинается с 1)
 * **End Col** - пропустить все колонки после этого номера
 
-![import_partial.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/import_partial.png?raw=true "Partial Import")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/import_partial.png?raw=true" alt="import_partial.png" height="500">](https://github.com/shpakovkv/OriginPro/blob/master/res/import_partial.png "Partial Import")
 
 Подготовка таблиц
 -----------------
 У каждой таблицы, графика и любого другого "окна" в OriginPro есть параметр **ShortName** - это уникальное **имя** объекта, по которому к нему может обратиться скрипт или программа. ShortName может состоять только из последовательности латинских букв (регистр имеет значение!) и цифр, не может начинаться с цифры и не может превышать 13 символов. У двух разных объектов OriginPro не может быть одинаковых имен.
 
-![book_shortname.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/book_shortname.png?raw=true "Unique ShortName")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/book_shortname.png?raw=true" alt="book_shortname.png" height="350">](https://github.com/shpakovkv/OriginPro/blob/master/res/book_shortname.png "Unique ShortName")
 
 Также у каждого объекта в OriginPro есть параметр **LongName** - это заголовок, который может содержать большое количество почти любых символов (в т.ч. русские буквы). Этот параметр ни на что не влияет и может совпадать у разных объектов.
 
 После импорта должно получиться несколько таблиц с **N*K** слоями, где **N** - это количество выстрелов и для всех таблиц оно одинаково, **K** - это количество осциллографов/каналов записанных отдельными файлами и импортированных в одну таблицу, **K > 0**, и для каждой таблицы **K** свое.
 
-![book_layernames.jpg](https://github.com/shpakovkv/OriginPro/tree/master/res/book_layernames.png?raw=true "Layers")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/book_layernames.png?raw=true" alt="book_layernames.png" height="176">](https://github.com/shpakovkv/OriginPro/blob/master/res/book_layernames.png "Layers")
 
 Для удобства, а также корректной работы программы построения графиков необходимо, чтобы имена всех слоев таблиц начинались с 4х-значного номера выстрела. Если файлы с данными были пронумерованы в соответствии с предложенной выше рекомендацией ([prefix][N-number][separator][K-number][postfix].[ext]), то привести имена слоев к требуемому виду можно с помощью скрипта **LabTalk_LayersNameCutter.c**, т.к. имя каждого слоя совпадает с именем файла, данные из которого были импортированы на этот слой. Все, что нужно сделать, это вырезать prefix и, по желанию, postfix. Для этого открываем файл скрипта и в блоке SEUP настраиваем параметры:
 
-```
+```c
 // SETUP
 
 // add the short names of the target books
@@ -209,7 +208,7 @@ int CharCount = 11;
 
 **Альтернативный вариант:** если нумерация выстрелов непрерывная (без пропусков), то можно использовать скрипт **LabTalk_LayerRenamer.c**, тогда изначальная нумерация файлов (и соответственно слоев таблиц) не имеет значения - скрипт пронумерует слои последовательно, начиная с заданного номера:
 
-```
+```c
 // SETUP
 StringArray bookNames = {"Book1", "Book2"};  // list of books whose layers need to be renamed
 

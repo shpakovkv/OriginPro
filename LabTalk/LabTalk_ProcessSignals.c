@@ -1,15 +1,11 @@
-StringArray aa;       
-aa.Add("DOptions6");	
-aa.Add("DOptions7");
-aa.Add("DOptions8");
-aa.Add("DOptions9");
-aa.Add("DOptions10");
-aa.Add("DOptions11");
+// SETUP
+StringArray booksWithOptions = {"DOptions1", "DOptions2", "DOptions3"};
 
-for(ii=1; ii<=aa.GetSize(); ii++)
+// PROCESS
+for(ii=1; ii<=booksWithOptions.GetSize(); ii++)
 {
-window -a %(aa.GetAt(ii)$);
-window -r %(aa.GetAt(ii)$) DOptions;
+window -a %(booksWithOptions.GetAt(ii)$);
+window -r %(booksWithOptions.GetAt(ii)$) DOptions;
 ProcessSignals();
-window -r DOptions %(aa.GetAt(ii)$);
+window -r DOptions %(booksWithOptions.GetAt(ii)$);
 }

@@ -15,12 +15,7 @@ How to use:
 
 //==========================================================
 // SETUP
-StringArray bookNames;
-bookNames.Add("OutDPO7054");
-bookNames.Add("OutLeCroy");
-bookNames.Add("OutTDS3054BL");
-bookNames.Add("OutTDS3054BR");
-bookNames.Add("OutTDS2024C");
+StringArray bookNames = {"osc01", "osc02", "osc03"};
 
 string saveToPath$ = "C:\temp\temp";
 

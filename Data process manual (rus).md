@@ -245,35 +245,35 @@ StringArray grNames = {"CH1", "CH2", "CH3"};
 
 ##### Страница Options
 
-[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_options.jpg?raw=true" alt="psignals_options.jpg" height="100">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_options.jpg "ProcessSignals Options")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_options.jpg?raw=true" alt="psignals_options.jpg">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_options.jpg "ProcessSignals Options")
 
 Все параметры на этой странице вводятся в первую строку таблицы. Остальные строки игнорируются программой.
 
 * **WksName** – Сюда вводится имя (ShortName) таблицы (WorksheetPage), данные из которой необходимо обработать.
 * **NewWksName** – Программа работает по неразрушающему принципу и при запуске автоматически создает новую таблицу с указанным здесь именем (**ShortName**) и записывает туда все обработанные данные. Исходная таблица при этом не претерпевает никаких изменений.
-* **OscCount** – здесь вводится количество листов таблицы, приходящихся на один выстрел. 
+* **OscCount** – здесь вводится количество листов таблицы, приходящихся на один выстрел.
 * Кнопка **Process** - запускает процесс обработки данных, в результате которого создается новая таблица с обработанными данными.
 
 ##### Страница Oscillograph_№
 
-[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_duplicatelayer.jpg?raw=true" alt="psignals_duplicatelayer.jpg" height="100">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_duplicatelayer.jpg "Duplicate Layer")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_duplicatelayer.jpg?raw=true" alt="psignals_duplicatelayer.jpg">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_duplicatelayer.jpg "Duplicate Layer")
 
-Количество страниц **Oscillograph_#** должно соответствовать числу **OscCount**. 
-* Если слоев больше, чем надо, удалите лишние (правый клик по имени слоя -> **Delete**). 
+Количество страниц **Oscillograph_#** должно соответствовать числу **OscCount**.
+* Если слоев больше, чем надо, удалите лишние (правый клик по имени слоя -> **Delete**).
 * Если слоев не хватает, то их нужно размножить. Правый клик на имя последнего слоя, пункт **Duplicate**. После этого появится новый слой с той же структурой и следующим порядковых номером.
-* В таблице с исходными данными всегда **N*K** слоев, где **N** - это количество выстрелов, а **K** - это количество страниц, приходящихся на один выстрел (обычно это количество осциллографов/каналов записанных отдельными файлами, которые импортированны в одну таблицу), при этом всегда **K > 0**. 
+* В таблице с исходными данными всегда **N*K** слоев, где **N** - это количество выстрелов, а **K** - это количество страниц, приходящихся на один выстрел (обычно это количество осциллографов/каналов записанных отдельными файлами, которые импортированны в одну таблицу), при этом всегда **K > 0**.
 
-[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_oscillograph.jpg?raw=true" alt="psignals_oscillograph.jpg" height="100">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_oscillograph.jpg "ProcessSignals Parameters")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_oscillograph.jpg?raw=true" alt="psignals_oscillograph.jpg">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_oscillograph.jpg "ProcessSignals Parameters")
 
-На странице **Oscillograph_#** параметры вводятся в соответствующий столбец. В первую строку заносятся параметры, которые будут применены к первому столбцу из соответствующей страницы таблицы с исходными данными. Во вторую строку заносятся параметры для второго столбца и т.д. Количество строк, соответственно, должно равняться количеству столбцов на соответствующей странице таблицы с данными. Кроме столбца **TimeCorr** - количество строк там должно равняться количеству выстрелов, а значение из каждой ячейки применяется ко всем сигналам в соответствующем выстреле. 
+На странице **Oscillograph_#** параметры вводятся в соответствующий столбец. В первую строку заносятся параметры, которые будут применены к первому столбцу из соответствующей страницы таблицы с исходными данными. Во вторую строку заносятся параметры для второго столбца и т.д. Количество строк, соответственно, должно равняться количеству столбцов на соответствующей странице таблицы с данными. Кроме столбца **TimeCorr** - количество строк там должно равняться количеству выстрелов, а значение из каждой ячейки применяется ко всем сигналам в соответствующем выстреле.
 
-[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_paramaccordance.jpg?raw=true" alt="psignals_paramaccordance.jpg" height="400">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_paramaccordance.jpg "ProcessSignals Parameters")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_paramaccordance.jpg?raw=true" alt="psignals_paramaccordance.jpg" height="500">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_paramaccordance.jpg "ProcessSignals Parameters")
 
 #####  Важно:
-* Столбцы **Type** и **ColName** должны содержать одинаковое количество строк. Это количество не должно превышать количество столбцов соответствующего листа из таблицы с и сходными данными. 
-* Заполнение "лишних" строк в этих столбцах повлечет за собой критическую ошибку и досрочную остановку выполнения программы после ее запуска. 
-* Если же количество строк в **Type** и **ColName** будет меньше количества столбцов в таблице данных (на соответствующей странице), то "лишние" столбцы будут скопированны "как есть", без каких-либо изменений. 
-* Остальные столбцы на этом листе могут содержать больше строк, чем **Type** и **ColName** - в этом случае, данные из "лишних" ячеек будут проигнорированны программой. 
+* Столбцы **Type** и **ColName** должны содержать одинаковое количество строк. Это количество не должно превышать количество столбцов соответствующего листа из таблицы с и сходными данными.
+* Заполнение "лишних" строк в этих столбцах повлечет за собой критическую ошибку и досрочную остановку выполнения программы после ее запуска.
+* Если же количество строк в **Type** и **ColName** будет меньше количества столбцов в таблице данных (на соответствующей странице), то "лишние" столбцы будут скопированны "как есть", без каких-либо изменений.
+* Остальные столбцы на этом листе могут содержать больше строк, чем **Type** и **ColName** - в этом случае, данные из "лишних" ячеек будут проигнорированны программой.
 * Столбец **TimeCorr** можно не заполнять - он автоматически заполнится нулями.
 
 ##### Параметры
@@ -292,7 +292,7 @@ StringArray grNames = {"CH1", "CH2", "CH3"};
 
 * **TimeCorr** - сдвиг по времени всех сигналов определенного выстрела. Все сигналы первого (по порядку) выстрела будут сдвинуты по времени на значение в первой ячейке. Вторая ячейка - второй выстрел, и т.д. **TimeCorr** на разных страницах **Oscillograph_#** могут иметь разные значения и применяются каждый к соответствующему осциллографу/каналу с данными.
 
-[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_oscaccordance.jpg?raw=true" alt="psignals_oscaccordance.jpg" height="400">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_oscaccordance.jpg "Oscilloscope_# Layers")
+[<img src="https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_oscaccordance.jpg?raw=true" alt="psignals_oscaccordance.jpg">](https://github.com/shpakovkv/OriginPro/blob/master/res/psignals_oscaccordance.jpg "Oscilloscope_# Layers")
 
 ##### Обработка нескольких таблиц "одновременно"
 

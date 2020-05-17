@@ -15,7 +15,7 @@ int rotate_on_graph_layer = 3;
 // specify intervals to include 
 // (pairs of numbers where number is 1-baset index of Book sheet)
 // for example {1,3,10,12} means include numbers 1,2,3,10,11,12   
-dataset add_intervals = {1, 10};  
+dataset add_intervals = {1, 10};
 
 // specify intervals to exclude from graph 
 //(pairs of numbers where number is 1-baset index of Book sheet)
@@ -53,13 +53,14 @@ dataset skip_list = {0};  // need initial value
 int start_sheet = 4294967295; 
 int last_sheet = 0;
 
-//checkout
-if ((skip_intervals.GetSize() > 1) && (int(skip_intervals.GetSize()/2)*2 != skip_intervals.GetSize()))
+//checkout paired values
+// empty dataset's size is 1 with NANUM as first element
+if ((skip_intervals[1] != NANUM) && (int(skip_intervals.GetSize()/2)*2 != skip_intervals.GetSize()))
 {
 	type "Error! Numbers in skip_intervals are not paired!";
 	int zz = 1/0;
 }
-if ((add_intervals.GetSize() > 1) && (int(add_intervals.GetSize()/2)*2 != add_intervals.GetSize()))
+if ((add_intervals[1] != NANUM) && (int(add_intervals.GetSize()/2)*2 != add_intervals.GetSize()))
 {
 	type "Error! Numbers in add_intervals are not paired!";
 	int zz = 1/0;
@@ -67,18 +68,27 @@ if ((add_intervals.GetSize() > 1) && (int(add_intervals.GetSize()/2)*2 != add_in
 
 
 // find first index to include
-if (add_intervals.GetSize() > 0){
+if (add_intervals.GetSize() > 1){
+	type "Setting start/stop according intervals...";
 	start_sheet = add_intervals[1];
 	last_sheet = add_intervals[add_intervals.GetSize()];
 }
-if (add_numbers.GetSize > 0){
-	if (start_sheet > add_numbers[1]){
+else type "No intervals to include.";
+
+// add_numbers.GetSize() is always >= 1
+// because empty dataset's size is 1 with NANUM as first element 
+if ((add_numbers.GetSize() > 1) || (add_numbers[1] != NANUM))
+{
+	if ((add_numbers[1] > 0) && (start_sheet > add_numbers[1])){
 		start_sheet = add_numbers[1];
+		type "Changing start according add_numbers[1] to $(start_sheet)";
 	}
 	if (last_sheet < add_numbers[add_numbers.GetSize()]){
 		last_sheet = add_numbers[add_numbers.GetSize()];
+		type "Changing last number according add_numbers[last] to $(last_sheet)";
 	}
 }
+else type "No single numbers to add.";
 
 // add skip numbers from between add_intervals
 for (int interval = 2; interval <= int(add_intervals.GetSize() / 2); interval++)
@@ -93,6 +103,14 @@ for (int interval = 2; interval <= int(add_intervals.GetSize() / 2); interval++)
 			skip_list[skip_list.GetSize() + 1] = jj;
 		}
 	}
+}
+
+// when there is no intervals added
+// means we have skip interval from first to last number
+if (add_intervals.GetSize() == 1)
+{
+	skip_intervals[1] = start_sheet;
+	skip_intervals[2] = last_sheet;
 }
 
 // add skip numbers from skip_intervals
@@ -118,12 +136,35 @@ for (int jj = 1; jj <= skip_numbers.GetSize(); jj++)
 	}
 }
 
+//=========================================================
+// Numbers and sheets names control
+
+// Get book names without repeats
+// dataset unames = {};
+// for (int ii = 1; ii <= book_names.GetSize(), ii++)
+// {
+// 	if (List(book_names[ii], unames) == 0)
+// }
+
 // // print start and stop sheet numbers and all numbers to skip
+// type "=================================================";
 // type "Start = $(start_sheet)   Stop = $(last_sheet)";
 // for (int ii=1; ii<=skip_list.GetSize(); ii++)
 // {
-// 	type "$(skip_list[ii])";
+// 	type "Skip $(skip_list[ii])";
 // }
+
+type "=================================================";
+type "Start = $(start_sheet)   Stop = $(last_sheet)";
+type "Numbers included:";
+for (int ii=start_sheet; ii<=last_sheet; ii++)
+{
+	if (List(ii, skip_list) == 0)
+	{
+		type "Include $(ii)";	
+	}
+}
+
 
 for (idx=1; idx<=rotate_cols.GetSize(); idx++)
 {
@@ -131,5 +172,5 @@ for (idx=1; idx<=rotate_cols.GetSize(); idx++)
 	book_names.SetAt(rotate_on_graph_layer, %(rotate_books.GetAt(idx)$));
 	string name$ = new_graph_names.GetAt(idx)$;
 	string postfix$ = new_graph_name_postfix$;
-	GraphAllInOne(graph_template$, name$, postfix$, start_sheet, count, skip_list, col_names, book_names);
+	GraphAllInOne(graph_template$, name$, postfix$, start_sheet, (last_sheet - start_sheet + 1), skip_list, col_names, book_names);
 }

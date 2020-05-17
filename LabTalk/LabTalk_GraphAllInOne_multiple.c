@@ -16,6 +16,7 @@ int rotate_on_graph_layer = 3;
 // (pairs of numbers where number is 1-baset index of Book sheet)
 // for example {1,3,10,12} means include numbers 1,2,3,10,11,12   
 dataset add_intervals = {1, 10};
+// you may leave intervals empty and specify single numbers in add_numbers dataset
 
 // specify intervals to exclude from graph 
 //(pairs of numbers where number is 1-baset index of Book sheet)
@@ -58,14 +59,19 @@ int last_sheet = 0;
 if ((skip_intervals[1] != NANUM) && (int(skip_intervals.GetSize()/2)*2 != skip_intervals.GetSize()))
 {
 	type "Error! Numbers in skip_intervals are not paired!";
-	int zz = 1/0;
+	throw 100;
 }
 if ((add_intervals[1] != NANUM) && (int(add_intervals.GetSize()/2)*2 != add_intervals.GetSize()))
 {
 	type "Error! Numbers in add_intervals are not paired!";
-	int zz = 1/0;
+	throw 100;
 }
-
+if ((add_intervals[1] == NANUM) && (add_numbers[1] == NANUM))
+{
+	type "Error! No numbers to include!";
+	type "Add one or more intervals to the add_intervals dataset OR/AND single values to the add_numbers dataset.";
+	throw 100;
+}
 
 // find first index to include
 if (add_intervals.GetSize() > 1){
@@ -140,11 +146,18 @@ for (int jj = 1; jj <= skip_numbers.GetSize(); jj++)
 // Numbers and sheets names control
 
 // Get book names without repeats
-// dataset unames = {};
-// for (int ii = 1; ii <= book_names.GetSize(), ii++)
-// {
-// 	if (List(book_names[ii], unames) == 0)
-// }
+type "Getting unique names list...";
+StringArray unames = {};
+for (int idx = 1; idx <= book_names.GetSize(); idx++)
+{
+	type "Loop started.";
+	if (unames.Find(book_names.GetAt(idx)$) == 0)
+	{
+		type "Adding new to unames...";
+		unames.Append(book_names.GetAt(idx)$);
+	}
+}
+type "Got unique names list.";
 
 // // print start and stop sheet numbers and all numbers to skip
 // type "=================================================";
@@ -157,13 +170,28 @@ for (int jj = 1; jj <= skip_numbers.GetSize(); jj++)
 type "=================================================";
 type "Start = $(start_sheet)   Stop = $(last_sheet)";
 type "Numbers included:";
+string line$ = "";
 for (int ii=start_sheet; ii<=last_sheet; ii++)
 {
 	if (List(ii, skip_list) == 0)
 	{
-		type "Include $(ii)";	
+		line$ = "Include # $(ii) == ";
+		for (int jj = 1; jj <= unames.GetSize(); jj++)
+		{
+			range rlayer = [%(unames.GetAt(jj)$)]$(ii)!;
+			line$ += "(%(unames.GetAt(jj)$))[%(rlayer.name$)] ";
+			if ("%(rlayer.name$)" == "")
+			{
+				type "ERROR! Not enough layer in WorksheetPage '%(unames.GetAt(jj)$)'";
+				throw 100;
+			}
+		}
+		type "%(line$)";
 	}
 }
+
+type "-------------------------------------------------";
+type "The end of the checkout. Graph construction has begun.";
 
 
 for (idx=1; idx<=rotate_cols.GetSize(); idx++)

@@ -488,3 +488,105 @@ for (idx=1; idx<=rotate_cols.GetSize(); idx++)
 }
 
 */
+
+
+//=================================================================================================
+//-----     SINGLE-SHEET BOOKs     ----------------------------------------------------------------
+//=================================================================================================
+
+
+void FillAllInOneGraphLayer_FromOneSheet(GraphLayer Graph, string DataBookName, int CurvesCount, int StartIdx, vector<int> skip, int step)
+{//filling single GraphLayer with Labels, Curves & Legend.
+//GraphNumber >= 1
+	
+	// SKIP - one-based indexes of DATA-Book layer with data to be skiped in AllInOne graph process
+	vector<uint> temp_vec;
+	
+	//use only first layer
+	Worksheet TempWks(Project.WorksheetPages(DataBookName).Layers(0));
+	for (int i=StartIdx; i<CurvesCount+StartIdx; i = i + step)
+	{//StartIdx is zero-based index
+		if (skip.Find(temp_vec, i + 1) == 0)	// skip contains one-based indexes, 'i' - zero-based index
+		{
+			//data access check. Exit plotting if fail.
+			out_str("Number of cols == " + TempWks.GetNumCols());
+			while (i < TempWks.GetNumCols() && TempWks.Columns(i).GetType() != 0)
+			{
+				i++;
+			}
+			if (TempWks.Columns(i).GetType() == 0) 
+			{
+				//TempDS.Attach(TempWks.Columns(VariableNames[i]));
+				Curve cr;
+				cr.Attach(TempWks.Columns(i));
+				Graph.AddPlot(cr);
+			}
+		}
+	}
+	TempWks.Detach();
+	//Grouping plots
+	Graph.GroupPlots(0, CurvesCount-1);
+}
+
+
+
+
+
+
+void GraphAllInOne_OneSheet(string TmpGrName, string NewGrName, string postfix, int StartIdx, int CurvesCount, vector<int> skip, StringArray BookNames, int step)
+{
+	// GraphAllInOne(tmp_graph$, name$, postfix$, start_layer, count, skip_list, col_names, book_names);
+	
+	int GraphLayersCount = BookNames.GetSize();
+
+	GraphPage TemplateGraphPage;
+	TemplateGraphPage = Project.GraphPages(TmpGrName);
+	Tree trTemplateFormat;
+	trTemplateFormat = TemplateGraphPage.GetFormat(FPB_ALL, FOB_ALL, TRUE, TRUE);
+	
+	StartIdx = StartIdx - 1;	// convert one-based index to zero-based
+	if (StartIdx < 0) { StartIdx = 0; } // convert one-based index to zero-based
+
+	GraphPage NewGraphPage; //create new GraphPage window
+	NewGraphPage.Create("origin");
+	
+	NewGraphPage.SetName(NewGrName + postfix);
+	NewGraphPage.Show = 0;  //hiding new graph window
+	
+	//...and add Postfix to it for LongName
+	NewGraphPage.SetLongName(NewGrName + postfix);
+	
+	//loading Layers from TemplategraphPage
+	if (GraphLayersCount > 0)
+	{//add enough Layers with Template format to NewGraphPage	
+		//NewGraphPage.Layers(0).Destroy();
+		
+		NewGraphPage.AddLayers(TemplateGraphPage);
+		for (int j=1; j<=GraphLayersCount; j++) 
+		{//for all GraphLayers in TemplateGraphPage
+			//NewGraphPage.AddLayer(TemplateGraphPage.Layers(j-1));
+			
+			if (NewGraphPage.Layers(j).DataPlots.Count() > 0)
+			{//deleting excess Curves from new Layer if needed
+				for (int p = NewGraphPage.Layers(j).DataPlots.Count(); p > 0; p--)
+				{
+					NewGraphPage.Layers(j).RemovePlot(0);
+				}
+			}
+		}
+	}
+	//deleting excess (first one) layer
+	NewGraphPage.Layers(0).Delete();
+	
+	//filling Layers of NewGraphPage with Curves
+	for (int j=0; j<GraphLayersCount; j++)
+	{//for all GraphLayers in NewGraphPage
+		FillAllInOneGraphLayer_FromOneSheet(NewGraphPage.Layers(j), BookNames[j], CurvesCount, StartIdx, skip, step);
+	}
+	
+	bool FormatUpdErr = NewGraphPage.ApplyFormat( trTemplateFormat, true, true, true ); //changing format
+	if (!FormatUpdErr) {out_str("Warning!\n GraphPage ('"+NewGraphPage.GetName()+"') format update failed!\n");}
+	
+	NewGraphPage.Show = 0; //hiding new graph window
+	NewGraphPage.Detach();
+}

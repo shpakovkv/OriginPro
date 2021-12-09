@@ -4,9 +4,9 @@ Save all layers of selected WorksheetPage(s) as .csv files
 to the specified folder
 
 How to use:
-1) Choose WorksheetPage with layers to be exported
-2) Get ShortName of that WorksheetPage
-3) Assign that name to the variable "bookNames"
+1) Choose WorksheetPage(s) with layers to be exported
+2) Get ShortName(s) of that WorksheetPage(s)
+3) Add that name(s) to the variable "bookNames" (replace existing temp data)
 4) Create a folder for exported files
 5) Specify the path to that folder via variable saveToPath$
 7) Copy below script and paste it into the Origin's Command Window
@@ -15,9 +15,9 @@ How to use:
 
 //==========================================================
 // SETUP
-StringArray bookNames = {"osc01", "osc02", "osc03"};
+StringArray bookNames = {"OutDPO7054", "OutHMO3004", "OutLeCroy", "OutTDS2024C"};
 
-string saveToPath$ = "C:\temp\temp";
+string saveToPath$ = "F:\Experiments\for_Egor\2021_11_08\2017_05_15_16-40_Pb_10mm_by_osc";
 
 //===========================================================
 // PROCESS 

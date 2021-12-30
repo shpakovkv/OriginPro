@@ -802,7 +802,8 @@ void ProcessGraph(bool y_rescale=false)
 									name = StringPrefixIncrease(name);
 								}
 				    		    //NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName().Mid(0,4) + GraphNamePostfix);
-				    		    NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName());
+				    		    NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName() + GraphNamePostfix);
+				    		    //NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName());
 				    		    NewGraphPage.Show = 0;  //hiding new graph window
 				    		    
 				    		    //...and add Postfix to it for LongName
@@ -1313,7 +1314,8 @@ void ProcessGraphRepeat(int Repeat_Count)
 									string AddPostfix = "Sample00";
 									AddPostfix =AddPostfix.Mid(0, 8 - (r+1)/10) + (r+1);
 									
-									NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName().Mid(0,4) + GraphNamePostfix + AddPostfix);
+									//NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName().Mid(0,4) + GraphNamePostfix + AddPostfix);
+									NewGraphPage.SetName(DataBook.Layers(i*OscCounts[0]).GetName() + GraphNamePostfix + AddPostfix);
 									NewGraphPage.Show = 0;  //hiding new graph window
 									
 									//...and add Postfix to it for LongName

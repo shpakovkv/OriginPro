@@ -24,32 +24,31 @@ X-Err = 7
 
 //--------------------------------------------------------
 // add the short names of the target books
-StringArray BookNames;
-BookNames.Add("Book1");
+StringArray BookNames = {"Book1", "Book2"};
 
 // specify column type pattern
 dataset typePattern = {4, 1};
 
 //--------------------------------------------------------
 int pattLen = typePattern.GetSize();
-// type "pattLen = $(pattLen)";
+type "pattLen = $(pattLen)";
 for (iBook = 1; iBook<=BookNames.GetSize(); iBook++)
 {
 	window -a %(BookNames.GetAt(iBook)$);
 	LayersCount = page.nLayers;
-	// type "layers count = $(LayersCount)";
+	type "layers count = $(LayersCount)";
 	for (iLayer = 1; iLayer<=LayersCount; iLayer++)
 	{
 		page.active = iLayer;
 		int ColNumber = wks.nCols;
-		// type "page = $(iLayer)";
-		// type "ColNumber = $(ColNumber)";
+		type "page = $(iLayer)";
+		type "ColNumber = $(ColNumber)";
 
 
 		for (iCol = 1; iCol <= ColNumber; iCol++)
 		{
 			int iType = Mod(iCol, pattLen);
-			// type "idx = $(iCol), type = $(iType)";
+			type "idx = $(iCol), type = $(iType)";
 			wks.col = iCol;
 			wks.col.type = typePattern[iType];
 		}

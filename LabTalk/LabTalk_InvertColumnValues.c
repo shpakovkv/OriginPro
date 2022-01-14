@@ -9,13 +9,11 @@ How to use:
 
 // add the short names of the target book(s)
 StringArray BookNames;
-BookNames.Add("PeaksSeries1");
-BookNames.Add("PeaksSeries2");
-BookNames.Add("PeaksSeries3");
-BookNames.Add("PeaksSeries4");
+BookNames.Add("Book1");
+
 
 // the index of the column to invert values
-int ColumnToInvert = 3;
+int ColumnToInvert = 4;
 
 //--------------------------------------------------------
 for (iBook = 1; iBook<=BookNames.GetSize(); iBook++)

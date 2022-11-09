@@ -10,5 +10,6 @@ Alternative: Help -> Programming -> LabTalk, then search "Substitution Notation"
 
 Example:
 ```
-"%(1,@LA), %(1,@LU)" => "Long_Name, Units"
+**"%(1,@LA), %(1,@LU)"** => **"Y_Long_Name, Y_Units"** *if there is no LongName then ShortName will be used*
+**"%(1X,@LA), %(1X,@LU)"** => **"X_Long_Name, X_Units"** *if there is no LongName then ShortName will be used*
 ```

@@ -30,6 +30,7 @@ StringArray BookNames = {"Book1", "Book2"};
 dataset typePattern = {4, 1};
 
 //--------------------------------------------------------
+StringArray typeNameList = {"Y", "None", "Y-Err", "X", "Lebel", "Z", "X-Err"}
 int pattLen = typePattern.GetSize();
 type "pattLen = $(pattLen)";
 for (iBook = 1; iBook<=BookNames.GetSize(); iBook++)
@@ -47,8 +48,8 @@ for (iBook = 1; iBook<=BookNames.GetSize(); iBook++)
 
 		for (iCol = 1; iCol <= ColNumber; iCol++)
 		{
-			int iType = Mod(iCol, pattLen);
-			type "idx = $(iCol), type = $(iType)";
+			int iType = Mod(iCol - 1, pattLen) + 1;
+			type "Column = $(iCol), Type = '%(typeNameList.GetAt(typePattern[iType])$)'";
 			wks.col = iCol;
 			wks.col.type = typePattern[iType];
 		}

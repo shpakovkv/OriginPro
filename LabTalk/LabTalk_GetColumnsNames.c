@@ -7,8 +7,15 @@ How to use:
 */
 
 type "";
+string output$ = "{";
 for (int iCol = 1; iCol <= wks.nCols; iCol++)
 {
+
 	wks.col = iCol;
-	type "%(wks.col.name$)";
+	type %(wks.col.name$);
+	output$ += ""%(wks.col.name$)", ";
 }
+output$ += "}";
+
+type "";
+type output$;
